@@ -3,11 +3,11 @@ module.exports = app => {
 
   var router = require("express").Router();
 
-  // Create a new Tutorial
   router.post("/", tutorials.create);
 
   // Retrieve all Tutorials
-  router.get("/", tutorials.findAll);
+  // router.get("/", tutorials.renderMain); 
+  // router.get("/", tutorials.renderReg);
 
   // Retrieve all published Tutorials
   router.get("/published", tutorials.findAllPublished);
@@ -24,5 +24,6 @@ module.exports = app => {
   // Delete all Tutorials
   router.delete("/", tutorials.deleteAll);
 
-  app.use("/api/tutorials", router);
+  app.use("/api/tutorials", router); ///api/tutorials это общий маршрут для данного роута
+  // app.use("/api/register", require("express").Router().get("/",tutorials.renderReg));
 };

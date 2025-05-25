@@ -1,6 +1,9 @@
 const express = require("express");
 // const bodyParser = require("body-parser"); /* deprecated */
 const cors = require("cors");
+const path = require('path')
+const handlebars = require("handlebars")
+
 
 const app = express();
 
@@ -16,22 +19,121 @@ app.use(express.json());  /* bodyParser.json() is deprecated */
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
 
+
+//passport 
+const passport = require('passport')
+const session = require('express-session')
+//Import the secondary "Strategy" library
+const LocalStrategy = require('passport-local').Strategy
 const db = require("./app/models");
-db.sequelize.sync();
-// // drop the table if it already exists
-// db.sequelize.sync({ force: true }).then(() => {
-//   console.log("Drop and re-sync db.");
-// });
+
+app.use(session({
+  secret: "secret",
+  resave: false ,
+  saveUninitialized: true ,
+}))
+// This is the basic express session({..}) initialization.
+app.use(passport.initialize()) 
+// init passport on every route call.
+app.use(passport.session())    
+// allow passport to use "express-session".
+
+const authUser = async (email, password, done) => {
+  try {
+    const user = await db.users.findOne({ where: { email, password } });
+
+    if (!user) {
+      return done(null, false, { message: 'Неверный email или пароль' });
+    }
+
+    return done(null, user);
+  } catch (err) {
+    return done(err);
+  }
+};
+
+passport.use(new LocalStrategy (authUser))
+
+// Сохраняем пользователя в сессии (по ID)
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+// Восстанавливаем пользователя по ID и загружаем все поля
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await db.users.findByPk(id);
+    if (!user) {
+      return done(new Error("Пользователь не найден"));
+    }
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
+
+
+
+// pour les views : HANDLEBARS
+const { engine } = require("express-handlebars")
+
+app.engine('handlebars', engine())
+app.set('views', path.join(__dirname, 'app/views'));//quand j'utilise res.render('templatename) ça regardera directement dans le /views
+app.set('view engine', 'handlebars');
+
+
+//css
+app.use(express.static(path.join(__dirname, "public")))
+
+//db.sequelize.sync(); // sync это команда инициирует создание таблиц в бд
+
+// drop the table if it already exists
+db.sequelize.sync({ force: false }).then(() => { //будет пересоздавать табл, если меняется структура 
+  console.log("Drop and re-sync db.");
+}); 
 
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
+
+app.post ("/login", passport.authenticate('local', {
+   successRedirect: "/mainpage",
+   failureRedirect: "/login",
+}))
+
+app.get('/logout', (req, res, next) => {
+  req.logout(err => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/login'); // После выхода — редирект на логин
+  });
+});
+
+// app.use((req, res, next) => {
+//   const openPaths = ['/login','/register', '/mainpage'];
+//   if (openPaths.includes(req.path)) {
+//     return next(); // Разрешаем доступ к login и register
+//   }
+
+//   if (req.isAuthenticated && req.isAuthenticated()) {
+//     return next(); // Авторизован — пропускаем
+//   }
+
+//   res.redirect('/login'); // Не авторизован — редирект
+// });
+
 require("./app/routes/turorial.routes")(app);
+require("./app/routes/lections.routes")(app); // подключаем файл роутов lections
+require("./app/routes/users.routes")(app); // подключаем файл роутов users
+require("./app/routes/front.routes")(app); // подключаем файл роутов users
+require("./app/routes/lab.routes")(app); // подключаем файл роутов users
+require("./app/routes/userAnswer.routes")(app); // подключаем файл роутов users
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;  
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

@@ -1,13 +1,14 @@
-module.exports = {
+module.exports = {//конфигурации подключения к PostgreSQL  через Sequelize
   HOST: "localhost",
   USER: "postgres",
-  PASSWORD: "123",
+  PASSWORD: "admin",
   DB: "testdb",
   dialect: "postgres",
-  pool: {
+  pool: { //настройки пула соединений
     max: 5,
     min: 0,
     acquire: 30000,
     idle: 10000
-  }
+  },
 };
+

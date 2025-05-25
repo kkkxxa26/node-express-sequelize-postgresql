@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Google Classroom - Home</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Roboto", Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #3c4043;
+      line-height: 1.5;
+        background: url(https://img.freepik.com/free-photo/vivid-blurred-colorful-background_58702-2655.jpg?semt=ais_hybrid&w=740 ) no-repeat center center fixed;
+      background-size: cover;
+   
+      
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background-color: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 500;
+      color: #1a73e8;
+    }
+
+   .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .user-info i {
+      color: #4a90e2;
+      font-size: 24px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background-color: #1a73e8;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .site-header {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    main {
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      width: 280px; /* Фиксированная ширина полей */
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-header {
+      height: 100px;
+      background-color: #dadce0;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.9) contrast(1.05);
+    }
+
+    .card-body {
+      padding: 16px;
+      width: 280px; /* Фиксированная ширина полей */
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: #5f6368;
+      width: 248px; /* Фиксированная ширина полей */
+      height: 42px;
+    }
+    .card-actions {
+  display: flex;
+  justify-content: space-between; /* Расположение кнопок по краям */
+  align-items: center;
+  gap: 10px; /* Отступ между кнопками */
+}
+    .test-button {
+      width: 100%; /* Занимает всю ширину */
+      padding: 8px 16px;
+      height: 32px;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      justify-content: center;
+      font-size: 14px;
+      text-decoration: none !important; /* Убираем подчеркивание */
+      display: inline-block; /* Чтобы width: 100% работал корректно */
+      transition: background-color 0.3s ease;
+    }
+    /* Убираем подчеркивание у ссылок внутри кнопки */
+    .test-button a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    }
+
+    .test-button:hover {
+      background-color: #1976d2;
+    }
+    .retry-button {
+      padding: 8px 16px;
+       height: 32px;
+       width: 100px;
+      background-color: #f38a21;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .retry-button:hover {
+      background-color: #97591b;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 16px;
+    }
+
+    .score-circle {
+      width: 80px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: white;
+    }
+
+    .score-circle.success {
+      background-color: #4caf50;
+    }
+
+    .score-circle.failure {
+      background-color: #f44336;
+    }
+    .btn-score {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    .btn-score:hover {
+      background-color: #ccc;
+    }
+
+    .btn-test {
+      background-color: #1a73e8;
+      color: white;
+    }
+
+    .btn-test:hover {
+      background-color: #155ea9;
+    }
+
+  
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="site-header">Кыдыкбаева А.</div>
+    <div class="user-avatar">АК</div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <h1>Лекции</h1>
+    
+    <div class="cards-grid" id="lecture-list">
+      <!-- Карточка 1 -->
+      <div class="card">
+        <div class="card-header" style="background-image: url(' https://gstatic.com/classroom/themes/img_graduation.jpg ');"></div>
+        <div class="card-body">
+          <div class="card-title">Математика</div>
+          <div class="card-subtitle">Преподаватель: Иванов А.Иванов ИвановИвановИванов Иванов</div>
+          
+           <!-- Оценка всегда видна -->
+
+
+          <div class="card-actions">
+            <div class="score-circle success">85/100</div>
+            <button class="retry-button">Заново</button>
+          
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Карточка 2 -->
+      <div class="card">
+        <div class="card-header" style="background-image: url('https://images.unsplash.com/photo-1431440869543-efaf3388c585?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YWVzdGhldGljJTIwd2FsbHBhcGVyfGVufDB8fDB8fHww');"></div>
+        <div class="card-body">
+          <div class="card-title">Физика</div>
+          <div class="card-subtitle">Преподаватель: Петров С.</div>
+
+            <div class="card-actions">
+          <button class="test-button">
+            <a href="./lection">Пройти курс</a>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Карточка 3 -->
+      <div class="card">
+        <div class="card-header" style="background-image: url('https://www.pixelstalk.net/wp-content/uploads/images6/Aesthetic-Wallpaper-HD-Pastel-Color.jpg');"></div>
+        <div class="card-body">
+          <div class="card-title">История</div>
+          <div class="card-subtitle">Преподаватель: Смирнова Н.</div>
+
+          <div class="card-actions">
+          <button class="test-button">Пройти тест</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Можно добавить больше карточек -->
+      
+    </div>
+
+    <div id="test-list" class="cards-wrapper">
+  <!-- Сюда будут вставлены карточки тестов -->
+</div>
+
+  </main>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      url: '/api/lections',
+      method: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        const container = $('#lecture-list');
+        container.empty();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          container.append('<p>Нет доступных лекций.</p>');
+          return;
+        }
+
+        data.forEach(function (lecture) {
+          const card = `
+            <div class="card">
+              <div class="card-header" style="background-image: url('https://images.unsplash.com/photo-1431440869543-efaf3388c585?fm=jpg&amp;q=60&amp;w=3000&amp;ixlib=rb-4.1.0&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YWVzdGhldGljJTIwd2FsbHBhcGVyfGVufDB8fDB8fHww');"></div>
+              <div class="card-body">
+                <div class="card-title">${lecture.title}</div>
+                <div class="card-subtitle">${lecture.content}</div>
+                <div class="card-actions">
+                  <button class="test-button">
+                    <a href="./lection?id=${lecture.id}">Пройти курс</a>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          container.append(card);
+        });
+      },
+      error: function () {
+        $('#lecture-list').html('<p>Ошибка загрузки лекций.</p>');
+      }
+    });
+  
+   $.ajax({
+      url: '/api/lab/allHead',
+      method: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        const container = $('#test-list');
+        container.empty();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          container.append('<p>Тесты не найдены.</p>');
+          return;
+        }
+
+        data.forEach(function (test) {
+          const card = `
+            <div class="card">
+              <div class="card-header" style="background-image: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=60');"></div>
+              <div class="card-body">
+                <div class="card-title">${test.title}</div>
+                   ${test.info?`<div class="score-circle success">${test.info.right}/${test.info.total}</div>`:``}
+                  <button class="test-button">
+                    <a href="./tests?id=${test.id}">Пройти тест</a>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          container.append(card);
+        });
+      },
+      error: function () {
+        $('#test-list').html('<p>Ошибка загрузки тестов.</p>');
+      }
+    });
+  
+  });
+</script>
+
+</body>
+</html>

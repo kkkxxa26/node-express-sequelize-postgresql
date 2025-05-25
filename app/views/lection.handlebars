@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Теория: Древнеримский бетон</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Roboto", Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #3c4043;
+      line-height: 1.6;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 32px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #1a73e8;
+    }
+
+    .article-image {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .article-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .article-content {
+      font-size: 16px;
+      margin-bottom: 32px;
+    }
+
+    .test-button {
+      display: inline-block;
+      background-color: #2196f3;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .test-button:hover {
+      background-color: #1976d2;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Заголовок -->
+    <h1 id="lection-title">Как древнеримские бетонные сооружения сохранились до наших дней?</h1>
+
+    {{!-- <!-- Изображение -->
+    <div class="article-image">
+      <img src="https://habrastorage.org/r/w780/getpro/habr/upload_files/707/14d/217/70714d217db9919ac788fc3a6d79f37f.jpg " alt="Римский бетон">
+    </div> --}}
+
+    <!-- Основной текст -->
+    <div class="article-content" id="lection-content">
+      <p>
+        Спустя почти два тысячелетия после расцвета Римской империи некоторые из её сооружений всё ещё стоят.
+        Эти чудеса выдержали испытание временем: Пантеон в Риме, римские акведуки в Сеговии, Испания,
+        и римские бани в Англии.
+      </p>
+      <p>
+        Долговечность этих сооружений во многом объясняется римским бетоном. Но что делает римский бетон таким особенным?
+        Что такого в этом материале, что позволило сооружениям простоять тысячи лет?
+      </p>
+      <p>
+        Исследователи до сих пор ломают голову над тем, как именно был изготовлен римский бетон, но у них есть несколько подсказок,
+        в том числе многие ингредиенты, входящие в его состав, и то, что он самовосстанавливается после дождя.
+      </p>
+    </div>
+
+    <!-- Кнопка пройти тест -->
+    <a href="./tests" class="test-button">Пройти тест</a>
+  </div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+
+    const queryParams = new URLSearchParams(window.location.search);
+
+    // Получаем конкретный параметр, например id
+    const id = queryParams.get('id');
+    $.ajax({
+      url: '/api/lections/'+id,
+      method: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        $('#lection-title').html(data.title);
+
+
+        const content = $('#lection-content');
+        content.empty();
+        content.html(data.content);
+
+
+        
+      },
+      error: function () {
+        //$('#lecture-list').html('<p>Ошибка загрузки лекций.</p>');
+      }
+    });
+  });
+</script>
+</body>
+</html>
