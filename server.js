@@ -1,9 +1,7 @@
 const express = require("express");
-// const bodyParser = require("body-parser"); /* deprecated */
 const cors = require("cors");
 const path = require('path')
 const handlebars = require("handlebars")
-
 
 const app = express();
 
@@ -13,12 +11,9 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-// parse requests of content-type - application/json
-app.use(express.json());  /* bodyParser.json() is deprecated */
+app.use(express.json());
 
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
-
 
 //passport 
 const passport = require('passport')
@@ -72,23 +67,16 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-
-
-// pour les views : HANDLEBARS
 const { engine } = require("express-handlebars")
 
 app.engine('handlebars', engine())
 app.set('views', path.join(__dirname, 'app/views'));//quand j'utilise res.render('templatename) ça regardera directement dans le /views
 app.set('view engine', 'handlebars');
 
-
 //css
 app.use(express.static(path.join(__dirname, "public")))
 
-//db.sequelize.sync(); // sync это команда инициирует создание таблиц в бд
-
-// drop the table if it already exists
-db.sequelize.sync({ force: false }).then(() => { //будет пересоздавать табл, если меняется структура 
+db.sequelize.sync({ force: false }).then(() => {
   console.log("Drop and re-sync db.");
 }); 
 
@@ -96,7 +84,6 @@ db.sequelize.sync({ force: false }).then(() => { //будет пересозда
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
-
 
 app.post ("/login", passport.authenticate('local', {
    successRedirect: "/mainpage",
@@ -112,25 +99,11 @@ app.get('/logout', (req, res, next) => {
   });
 });
 
-// app.use((req, res, next) => {
-//   const openPaths = ['/login','/register', '/mainpage'];
-//   if (openPaths.includes(req.path)) {
-//     return next(); // Разрешаем доступ к login и register
-//   }
-
-//   if (req.isAuthenticated && req.isAuthenticated()) {
-//     return next(); // Авторизован — пропускаем
-//   }
-
-//   res.redirect('/login'); // Не авторизован — редирект
-// });
-
-require("./app/routes/turorial.routes")(app);
 require("./app/routes/lections.routes")(app); // подключаем файл роутов lections
 require("./app/routes/users.routes")(app); // подключаем файл роутов users
-require("./app/routes/front.routes")(app); // подключаем файл роутов users
-require("./app/routes/lab.routes")(app); // подключаем файл роутов users
-require("./app/routes/userAnswer.routes")(app); // подключаем файл роутов users
+require("./app/routes/front.routes")(app); // подключаем файл роутов front
+require("./app/routes/lab.routes")(app); // подключаем файл роутов lab
+require("./app/routes/userAnswer.routes")(app); // подключаем файл роутов usersAnswers
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;  
