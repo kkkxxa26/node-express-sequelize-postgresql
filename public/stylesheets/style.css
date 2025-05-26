@@ -33,15 +33,15 @@ body {
 .form-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* распределяем вверх и вниз */
+  justify-content: space-between;
   align-items: center;
   height: 600px;
   width: 760px;
   background: white;
-  padding: 30px 30px 0 30px; /* убираем нижний padding */
+  padding: 30px 30px 0 30px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  
+} 
 .form-content {
   flex-grow: 1;
   display: flex;
@@ -82,7 +82,7 @@ body {
 
 label {
   margin-bottom: 6px;
-  font-weight: 450;
+  font-size: 16px;
 }
 
 .input-wrapper {
@@ -183,11 +183,14 @@ header {
   align-items: center;
   padding: 10px 20px;
   background-color: #f8f8f8;
+  font-size: 18px;
+  font-weight: normal;
 }
 
 .site-header {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 16px;
+  line-height: 1.1;
+  justify-content: center;
 }
 
 .header-right {
@@ -196,16 +199,24 @@ header {
   gap: 10px;
 }
 
+.header-left-text {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 10px;
+}
+
 .user-avatar {
-  width: 40px;
+  width: auto;
   height: 40px;
+  padding: 12px 12px 12px 12px;
   background-color: #007bff;
   color: white;
-  border-radius: 50%;
+  border-radius: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  gap: 12px;
 }
 
 .logout-icon {
@@ -234,12 +245,16 @@ main {
   max-width: 1200px;
   margin: 0 auto;
 }
-
+h1 {
+  font-size: 28px;
+  color: #000000;
+  margin-bottom: 24px;
+}
 h2 {
   font-size: 24px;
   margin-bottom: 20px;
+  color: #333;
 }
-
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -250,7 +265,7 @@ h2 {
 
 .card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   display: flex;
@@ -297,13 +312,13 @@ h2 {
 }
 
 .test-button {
-  width: 100%;
+  width: 260px;
   padding: 8px 16px;
   height: 32px;
   background-color: #2196f3;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   text-align: center;
@@ -316,6 +331,7 @@ h2 {
   text-decoration: none;
   color: inherit;
   display: block;
+  justify-content: center;
 }
 
 .test-button:hover {
@@ -354,6 +370,91 @@ h2 {
 
 .score-circle.failure {
   background-color: #f44336;
+}
+/* === СТРАНИЦА ТЕСТОВ === */
+
+.test-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.question {
+  margin-bottom: 32px;
+}
+
+.question > label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 22px;         /* Сделаем крупнее */
+  font-weight: 600;       /* Жирный шрифт */
+  color: #1a1a1a;           /* Темнее */
+}
+
+.options input[type="radio"] {
+  margin-right: 10px;
+}
+
+.options label {
+  display: block;
+  margin-bottom: 6px;
+  cursor: pointer;
+  font-size: 16px;         /* Чуть меньше */
+  font-weight: normal;     /* Нормальный вес */
+  color: #444;             /* Немного светлее */
+}
+
+    .submit-button {
+    padding: 8px 16px;
+    width: 240px;
+    height: 32px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px; 
+    cursor: pointer;
+    text-align: center;
+    justify-content: center;
+    font-size: 14px;
+    text-decoration: none !important; /* Убираем подчеркивание */
+    display: inline-block; /* Чтобы width: 100% работал корректно */
+    transition: background-color 0.3s ease;
+    }
+     .submit-button a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    justify-content: center;
+    }
+
+    .submit-button:hover {
+      background-color: #155ea9;
+    }
+
+/* === ГЛАВНАЯ СТРАИЦА === */
+
+.onelection-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.article-content {
+  font-size: 20px;
+  line-height: 1.7;
+  color: #3c4043;
+  margin-bottom: 32px;
+}
+
+.article-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 24px;
 }
 
 /* === ФУТЕР === */
