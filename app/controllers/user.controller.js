@@ -4,17 +4,17 @@ const Op = db.Sequelize.Op;
 
 // user это объект(запись) с информацией об одной лекции 
 // User это модель таблицы которая ее описывает в бд
+//_______________________________ user _______________________________
 
 exports.create = (req, res) => { //"/", users.create 
   // Валидация request
-  if (!req.body.email || !req.body.name) { // если в req.body !(нет) title || content
-    res.status(400).send({ // то выводим статус 400(ошибка) с сообщением 
-      message: "ниче нет" //само соообщение 
+  if (!req.body.email || !req.body.name) { 
+    res.status(400).send({ 
+      message: "ниче нет" 
     });
     return;
   }
 
-  // иначе создаем объект lection с полями 
   const user = { 
     email: req.body.email, //поля 
     password: req.body.password,
@@ -41,7 +41,7 @@ exports.create = (req, res) => { //"/", users.create
 };
 
  // Получить все лекции 
- // router.get("/", lections.findAll);
+ //   router.get("/", user.findAll); // Получить все 
 exports.findAll = (req, res) => {
   const email = req.query.email;
   const condition = email ? { email: { [Op.like]: `%${email}%` } } : null;
@@ -59,8 +59,7 @@ exports.findAll = (req, res) => {
 };
 
 // Получить одну лекцию по ID
-// router.get("/:id", lections.findOne);
-
+// router.get("/:id", user.findOne);// Получить одну по ID
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
@@ -82,7 +81,7 @@ exports.findOne = (req, res) => {
 };
 
 // Обновить лекцию по ID 
-// router.put("/:id", lections.update);  
+// router.put("/:id", user.update); // Обновить одну по ID  
 exports.update = (req, res) => {
   const id = req.params.id;
 
@@ -129,7 +128,7 @@ exports.update = (req, res) => {
 };
 
 // Удалить
-// router.delete("/:id", lections.delete);      
+// router.delete("/:id", user.delete); // Удалить      
 exports.delete = (req, res) => {
   const id = req.params.id;
 
@@ -153,7 +152,7 @@ exports.delete = (req, res) => {
 };
 
 // Удалить все
-// router.delete("/", lections.deleteAll);      
+// router.delete("/", user.deleteAll); // Удалить все
 exports.deleteAll = (req, res) => {
   Users.destroy({
     where: {},

@@ -1,10 +1,5 @@
-//Sequelize  — это ORM (Object-Relational Mapper) инструмент, который связывает объекты в коде с таблицами в бд
-//sequelize это экземпляр подключения к БД через ORM Sequelize
-//Sequelize это сам класс, из которого берутся типы данных и методы
-module.exports = (sequelize, Sequelize) => {//экспорт функции, которая принимает
-const Users = sequelize.define ( "user", {//определяем модель 
-//модель Lections , который описывает таблицу в бд
-
+module.exports = (sequelize, Sequelize) => {
+const Users = sequelize.define ( "user", {
     email: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -17,8 +12,8 @@ const Users = sequelize.define ( "user", {//определяем модель
       unique: true,
       validate: { isPassword: true }
     },
-    name: { // название поля 
-        type: Sequelize.STRING//и его тип
+    name: { 
+        type: Sequelize.STRING
     },
     surname: {
         type: Sequelize.STRING
@@ -37,10 +32,6 @@ const Users = sequelize.define ( "user", {//определяем модель
       type: Sequelize.STRING,
       defaultValue: 'user'
     }
-
-    // id; createdAt ; updatedAt автоматически создаваемые поля  в Sequelize
-    // которые добавляются к каждой модели по умолчанию и не требуют явного объявления
-});
+  });
      return Users;
-    // делаем return, чтобы её можно было потом использовать в контроллерах и сервере
 }

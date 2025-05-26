@@ -1,36 +1,31 @@
 const db = require("../models");
 const UserAnswer = db.userAnswer;
 const Op = db.Sequelize.Op; 
+//_______________________________ userAnswer _______________________________
 
-// lection это объект(запись) с информацией об одной лекции 
-// Lections это модель таблицы которая ее описывает в бд
-
-exports.create = (req, res) => { //"/", lections.create 
-  // Валидация request
+exports.create = (req, res) => {  
   if (!req.body.lab_body_Id || !req.body.lab_answers_Id) { 
-    res.status(400).send({ // то выводим статус 400(ошибка) с сообщением 
-      message: "ниче нет" //само соообщение 
+    res.status(400).send({
+      message: "ниче нет"  
     });
     return;
   }
 
-  // иначе создаем объект lection с полями 
   const userAnswer = { 
-    lab_body_Id: req.body.lab_body_Id, //поля lection
-    lab_answers_Id: req.body.lab_answers_Id, //поля lection
-    user_Id: req.user.id  //поля lection
+    lab_body_Id: req.body.lab_body_Id, 
+    lab_answers_Id: req.body.lab_answers_Id, 
+    user_Id: req.user.id  
 
   };
 
-// Сохраняем Lections в бд
-  UserAnswer.create(userAnswer) // create в готовой базе создаем строчку 
+  UserAnswer.create(userAnswer)
     .then(data => {
       res.send(data);
     })
-    .catch(err => {//иначе попадаем в .catch()
-      console.error("Ошибка при создании лекции:", err); // выводим ошибку в консоль
-      res.status(500).send({//выдаем ответ с кодом 500 и сообщением 
-        message://сообщение которое мы выодим
+    .catch(err => {
+      console.error("Ошибка при создании лекции:", err);
+      res.status(500).send({
+        message:
           err.message || "Произошла ошибка при создании."
       });
     });

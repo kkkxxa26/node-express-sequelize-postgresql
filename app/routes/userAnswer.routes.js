@@ -1,15 +1,10 @@
 
-module.exports = app => { // экспорт функции 
+module.exports = app => {
 
-  const userAnswer = require("../controllers/userAnswer.controller.js"); // подключается контроллер lection
-
+  const userAnswer = require("../controllers/userAnswer.controller.js");
   var router = require("express").Router(); 
 
-
-  router.post("/", userAnswer.create); // router.Метод POST(в скобках указваем "путь",обработчик используется для отправки новых данных на сервер с целью их создания и записи в бд
+  router.post("/", userAnswer.create); 
   
-  app.use("/api/userAnswer", router); // это общий маршрут для данного routera
-  // монтируем  наш роутер на конкретный базовый путь /work/lections
-  // т.е. все, что определено в router, будет доступно под данным префиксом 
-  
+  app.use("/api/userAnswer", router);
 };

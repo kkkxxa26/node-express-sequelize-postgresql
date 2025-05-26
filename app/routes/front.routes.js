@@ -9,7 +9,5 @@ module.exports = app => {
   router.get("/tests", front.renderTests);
   router.get("/lection", front.renderLections);
 
-  
-
   app.use(router); 
 };

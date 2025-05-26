@@ -5,7 +5,9 @@ const Op = db.Sequelize.Op;
 // lection это объект(запись) с информацией об одной лекции 
 // Lections это модель таблицы которая ее описывает в бд
 
-exports.create = (req, res) => { //"/", lections.create 
+//_______________________________ lection _______________________________
+
+exports.create = (req, res) => { // "/", lections.create 
   // Валидация request
   if (!req.body.title || !req.body.content) { // если в req.body !(нет) title || content
     res.status(400).send({ // то выводим статус 400(ошибка) с сообщением 

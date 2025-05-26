@@ -1,6 +1,5 @@
-// это класс controller где мы прописываем функции относящиеся к этому модулю
-// пример контроллера
 const db = require("../models");
+//controller Front unique
 
 exports.renderMain=(req,res)=>{
 
