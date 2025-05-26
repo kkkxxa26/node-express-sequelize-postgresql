@@ -1,3 +1,4 @@
+// Импорт необходимых библиотек
 const express = require("express");
 const cors = require("cors");
 const path = require('path')
@@ -5,95 +6,99 @@ const handlebars = require("handlebars")
 
 const app = express();
 
+// Настройка CORS для разрешения запросов с другого порта (фронт на 8081)
 var corsOptions = {
   origin: "http://localhost:8081"
 };
 
-app.use(cors(corsOptions));
-
+app.use(cors(corsOptions));// Применение CORS
+// Поддержка JSON и url-encoded форматов в теле запросов
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Альтернатива устаревшему bodyParser
 
-app.use(express.urlencoded({ extended: true }));   /* bodyParser.urlencoded() is deprecated */
-
-//passport 
+// Подключение и настройка Passport.js для аутентификации
 const passport = require('passport')
 const session = require('express-session')
-//Import the secondary "Strategy" library
-const LocalStrategy = require('passport-local').Strategy
-const db = require("./app/models");
+const LocalStrategy = require('passport-local').Strategy // Стратегия аутентификации по email/паролю
+const db = require("./app/models"); // Подключение ORM моделей (Sequelize)
 
-app.use(session({
-  secret: "secret",
-  resave: false ,
-  saveUninitialized: true ,
+// Настройка сессии
+app.use(session({  
+  secret: "secret", // Секрет для подписи cookie
+  resave: false , // Не сохранять сессию, если она не изменилась
+  saveUninitialized: true , // Сохранять новую, но неинициализированную сессию
 }))
-// This is the basic express session({..}) initialization.
-app.use(passport.initialize()) 
-// init passport on every route call.
-app.use(passport.session())    
-// allow passport to use "express-session".
 
+// Инициализация Passport
+app.use(passport.initialize()) // Инициализация Passport
+app.use(passport.session()) // Подключение Passport к express-session   
+
+// Аутентификационная функция — проверка email и пароля
 const authUser = async (email, password, done) => {
-  try {
+  try { // Поиск пользователя в БД
     const user = await db.users.findOne({ where: { email, password } });
-
-    if (!user) {
+    
+    if (!user) { // Пользователь не найден
       return done(null, false, { message: 'Неверный email или пароль' });
     }
 
-    return done(null, user);
+    return done(null, user);  // Успешная аутентификация
   } catch (err) {
-    return done(err);
+    return done(err); // Ошибка при запросе к БД
   }
 };
 
+// Регистрация стратегии LocalStrategy в Passport
 passport.use(new LocalStrategy (authUser))
-
-// Сохраняем пользователя в сессии (по ID)
+// Сериализация пользователя — сохранение его ID в сессии
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
-
-// Восстанавливаем пользователя по ID и загружаем все поля
+// Десериализация — восстановление полного пользователя по ID
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await db.users.findByPk(id);
+    const user = await db.users.findByPk(id); // Поиск по первичному ключу
     if (!user) {
       return done(new Error("Пользователь не найден"));
     }
-    done(null, user);
+    done(null, user); // Пользователь найден
   } catch (err) {
-    done(err);
+    done(err); // Ошибка при получении данных
   }
 });
 
+
+// Подключение шаблонизатора handlebars
 const { engine } = require("express-handlebars")
 
-app.engine('handlebars', engine())
-app.set('views', path.join(__dirname, 'app/views'));//quand j'utilise res.render('templatename) ça regardera directement dans le /views
-app.set('view engine', 'handlebars');
+app.engine('handlebars', engine()); // Настройка движка handlebars
+app.set('views', path.join(__dirname, 'app/views')); // Установка папки для шаблонов
+app.set('view engine', 'handlebars'); // Установка шаблонизатора по умолчанию
 
-//css
-app.use(express.static(path.join(__dirname, "public")))
+// Подключение папки со статическими файлами (CSS, изображения и т.д.)
+app.use(express.static(path.join(__dirname, "public")));
 
+// Синхронизация с базой данных без принудительного удаления данных (force: false)
 db.sequelize.sync({ force: false }).then(() => {
   console.log("Drop and re-sync db.");
 }); 
 
-// simple route
+// Простой маршрут для проверки (корень приложения)
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "AOS" });
 });
 
+// Обработка POST-запроса /login через Passport
 app.post ("/login", passport.authenticate('local', {
-   successRedirect: "/mainpage",
-   failureRedirect: "/login",
-}))
+   successRedirect: "/mainpage", // При успехе — редирект на главную
+   failureRedirect: "/login", // При ошибке — редирект обратно на страницу логина
+}));
 
+// Выход из системы (разлогин)
 app.get('/logout', (req, res, next) => {
   req.logout(err => {
     if (err) {
-      return next(err);
+      return next(err); // Обработка возможной ошибки
     }
     res.redirect('/login'); // После выхода — редирект на логин
   });
@@ -105,7 +110,7 @@ require("./app/routes/front.routes")(app); // подключаем файл ро
 require("./app/routes/lab.routes")(app); // подключаем файл роутов lab
 require("./app/routes/userAnswer.routes")(app); // подключаем файл роутов usersAnswers
 
-// set port, listen for requests
+// Запуск сервера на заданном порту (по умолчанию 8080)
 const PORT = process.env.PORT || 8080;  
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
