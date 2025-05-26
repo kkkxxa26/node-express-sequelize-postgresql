@@ -35,16 +35,21 @@ app.use(passport.session()) // Подключение Passport к express-sessio
 
 // Аутентификационная функция — проверка email и пароля
 const authUser = async (email, password, done) => {
-  try { // Поиск пользователя в БД
-    const user = await db.users.findOne({ where: { email, password } });
-    
-    if (!user) { // Пользователь не найден
-      return done(null, false, { message: 'Неверный email или пароль' });
+  try { // Поиск пользователя в БД только по email
+    const user = await db.users.findOne({ where: { email } });
+
+    if (!user) {
+      return done(null, false, { message: 'Неверный email' });
+    } // Проверяем пароль через метод validPassword
+    const isValid = await user.validPassword(password); // validPassword добавлен в users.model.js
+
+    if (!isValid) {
+      return done(null, false, { message: 'Неверный пароль' });
     }
 
-    return done(null, user);  // Успешная аутентификация
+    return done(null, user); // Успешная аутентификация
   } catch (err) {
-    return done(err); // Ошибка при запросе к БД
+    return done(err);
   }
 };
 
