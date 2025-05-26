@@ -1,198 +1,9 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Вход</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css " />
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background: url(https://img.freepik.com/free-photo/vivid-blurred-colorful-background_58702-2655.jpg?semt=ais_hybrid&w=740 ) no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: #333;
-    }
-
-    .registration-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 1200px;
-      width: 100%;
-    }
-
-    .illustration {
-      background-image: url('https://img3.akspic.ru/previews/4/8/8/8/7/178884/178884-iphone_16_pro-chernyj_titan-art-yabloko-astronomicheskij_obekt-500x.jpg ');
-      background-size: cover;
-      background-position: center;
-      height: 600px;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .form-container {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.bottom-image-wrapper {
-  width: 320px; /* Фиксированная ширина полей */
-  display: flex;
-  justify-content: center;
-  margin-top: 118px; /* отправляет в самый низ */
-}
-
-.bottom-image {
-  
-  width: 320px;
-  height: 60px;
-  object-fit: contain; /* Обрезает лишнее, сохраняет пропорции */
-  border-radius: 8px;
-  display: block;
-  margin: 0 auto;
-}
-
-
-    .form-container h2 {
-      text-align: left;
-      margin-bottom: 8px;
-      color: #333;
-      width: 320px; /* Фиксированная ширина полей */
-      
-    }
-
-    .form-group-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    width: 100%;
-    max-width: 320px; /* Ограничиваем ширину группы */
-    margin-top: 0px;
-}
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    .input-wrapper {
-      position: relative;
-      display: inline-block;
-      display: flex;
-      justify-content: center;
-    }
-  
-    .input-wrapper i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #999;
-    }
-    
-
-
-    input[type="email"],
-    input[type="password"] {
-      width: 320px; /* Фиксированная ширина полей */
-      padding: 12px 14px;
-      padding-left: 40px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: all 0.3s ease;
-    }
-
-    input:focus {
-      border-color: #4a90e2;
-      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-    }
-
-    input.error {
-      border-color: #e74c3c;
-    }
-
-    .error-message {
-      color: #e74c3c;
-      font-size: 14px;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .form-group.error .error-message {
-      display: block;
-    }
-
-    .button-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-top: 32px;
-    }
-
-    button {
-      width: 320px; /* Фиксированная ширина полей */
-      padding: 12px;
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #357ac8;
-    }
-
-    .footer-text {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #666;
-    }
-
-    .footer-text a {
-      color: #4a90e2;
-      text-decoration: none;
-    }
-
-    .footer-text a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-
   <div class="registration-container">
-    <!-- Форма слева -->
     <div class="form-container">
       <h2>Вход</h2>
+      <div class="form-content">
       <form id="loginForm" novalidate action="/login" method="POST">
-        <div class="form-group">
+        <div class="form-group-login">
           <div>
             <label for="loginEmail">Email</label>
             <div class="input-wrapper">
@@ -220,51 +31,19 @@
         <div class="footer-text">
           Нет аккаунта? <a href="./register">Зарегистрироваться</a>
         </div>
-
-        <!-- Картинка внизу -->
-    <div class="bottom-image-wrapper">
-      <img src="https://enactus.kg/wp-content/uploads/2022/04/kgtu-logo.png" alt="Логотип" class="bottom-image" />
+    </form>
     </div>
 
-      </form>
-    </div>
+        <!-- Картинка внизу формы -->
+        <div class="bottom-image-wrapper">
+          <img src="https://enactus.kg/wp-content/uploads/2022/04/kgtu-logo.png" alt="Логотип" class="bottom-image" />
+        </div>
 
-    <!-- Иллюстрация справа -->
-    <div class="illustration"></div>
   </div>
-
+  
+ 
   <script>
     const form = document.getElementById('loginForm');
     const emailInput = document.getElementById('loginEmail');
     const passwordInput = document.getElementById('loginPassword');
-
-/*
-    function isValidEmail(email) {
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return re.test(String(email).toLowerCase());
-    }
-
-    function validateForm() {
-      let isValid = true;
-
-      if (!isValidEmail(emailInput.value)) {
-        emailInput.closest('.form-group').classList.add('error');
-        isValid = false;
-      } else {
-        emailInput.closest('.form-group').classList.remove('error');
-      }
-
-      if (passwordInput.value.length < 6) {
-        passwordInput.closest('.form-group').classList.add('error');
-        isValid = false;
-      } else {
-        passwordInput.closest('.form-group').classList.remove('error');
-      }
-
-      return isValid;
-    }
-*/
-     </script>
-
-</body>
-</html>
+  </script>

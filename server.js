@@ -16,6 +16,9 @@ app.use(cors(corsOptions));// Применение CORS
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Альтернатива устаревшему bodyParser
 
+// Подключаем папку public как статическую
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Подключение и настройка Passport.js для аутентификации
 const passport = require('passport')
 const session = require('express-session')

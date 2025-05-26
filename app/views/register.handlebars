@@ -1,182 +1,7 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Регистрация</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css " />
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background: url(https://img.freepik.com/free-photo/vivid-blurred-colorful-background_58702-2655.jpg?semt=ais_hybrid&w=740 ) no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      color: #333;
-    }
-
-    .registration-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 1200px;
-      width: 100%;
-    }
-
-    .illustration {
-      background-image: url('https://img3.akspic.ru/previews/4/8/8/8/7/178884/178884-iphone_16_pro-chernyj_titan-art-yabloko-astronomicheskij_obekt-500x.jpg'); /* Замени на свою иллюстрацию */
-      background-size: cover;
-      background-position: center;
-      height: 600px;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .form-container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-       gap: 8px;
-    }
-
-    .form-container h2 {
-      text-align: left;
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    .form-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    .input-wrapper {
-      position: relative;
-    }
-
-    .input-wrapper i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #999;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="tel"] {
-      width: 100%;
-      padding: 12px 14px;
-      padding-left: 40px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: all 0.3s ease;
-    }
-
-    input:focus {
-      border-color: #4a90e2;
-      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-    }
-
-    input.error {
-      border-color: #e74c3c;
-    }
-
-    .error-message {
-      color: #e74c3c;
-      font-size: 14px;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .form-group.error .error-message {
-      display: block;
-    }
-
-    button {
-      width: 320px; /* Фиксированная ширина полей */
-      padding: 12px;
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 10px;
-    }
-
-    .button-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    }
-
-    button:hover {
-      background-color: #357ac8;
-    }
-
-    .footer-text {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #666;
-    }
-
-    .footer-text a {
-      color: #4a90e2;
-      text-decoration: none;
-    }
-
-    .footer-text a:hover {
-      text-decoration: underline;
-    }
-
-    .bottom-image-wrapper {
-  width: 530px; /* Фиксированная ширина полей */
-  display: flex;
-  justify-content: center;
-  margin-top: 10px; /* отправляет в самый низ */
-}
-
-.bottom-image {
-  
-  width: 320px;
-  height: 60px;
-  object-fit: contain; /* Обрезает лишнее, сохраняет пропорции */
-  border-radius: 8px;
-  display: block;
-  margin: 0 auto;
-}
-
-  </style>
-</head>
-<body>
-
   <div class="registration-container">
-    <div class="illustration"></div>
      <div class="form-container">
       <h2>Регистрация</h2>
+      <div class="form-content">
       <form id="registerForm" novalidate>
         <div class="form-group">
           <div>
@@ -242,13 +67,14 @@
         <div class="footer-text">
           Уже есть аккаунт? <a href="./login">Войти</a>
         </div>
-
-         <!-- Картинка внизу -->
-    <div class="bottom-image-wrapper">
-      <img src="https://enactus.kg/wp-content/uploads/2022/04/kgtu-logo.png" alt="Логотип" class="bottom-image" />
-    </div>
-
+      </div>
       </form>
+
+               <!-- Картинка внизу -->
+        <div class="bottom-image-wrapper">
+          <img src="https://enactus.kg/wp-content/uploads/2022/04/kgtu-logo.png" alt="Логотип" class="bottom-image" />
+        </div>
+
     </div>
   </div>
 
@@ -356,5 +182,3 @@
     });
   </script>
 
-</body>
-</html>

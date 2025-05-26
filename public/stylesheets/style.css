@@ -1,0 +1,388 @@
+/* === СБРОС И БАЗОВЫЙ СТИЛЬ === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: url(https://img.freepik.com/free-photo/vivid-blurred-colorful-background_58702-2655.jpg?semt=ais_hybrid&w=740) no-repeat center center fixed;
+  background-size: cover;
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* === КОНТЕЙНЕРЫ === */
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.registration-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    }
+
+
+/* === ФОРМА РЕГИСТРАЦИИ === */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* распределяем вверх и вниз */
+  align-items: center;
+  height: 600px;
+  width: 760px;
+  background: white;
+  padding: 30px 30px 0 30px; /* убираем нижний padding */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.form-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  align-items: center;
+}
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 8px;
+  color: #333;
+  width: 320px;
+}
+
+.form-group-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.form-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 32px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.form-group-login {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 24px;
+}
+
+label {
+  margin-bottom: 6px;
+  font-weight: 450;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.input-wrapper i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"]  {
+  width: 320px;
+  padding: 12px 14px 12px 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  outline: none;
+}
+
+input.error {
+  border-color: #e74c3c;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 4px;
+  display: none;
+}
+
+.form-group.error .error-message {
+  display: block;
+}
+
+/* === КНОПКА === */
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+button {
+  width: 320px;
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #357ac8;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.4);
+}
+
+/* === НИЖНЕЕ ИЗОБРАЖЕНИЕ === */
+.bottom-image-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.bottom-image {
+  width: 320px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* === ХЕДЕР === */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f8f8;
+}
+
+.site-header {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.logout-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.logout-icon:hover {
+  background-color: #1976d2;
+}
+
+.logout-icon i {
+  font-size: 18px;
+}
+
+/* === КАРТОЧКИ === */
+main {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  justify-content: left;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+  max-width: 280px;
+  width: 100%;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card-header {
+  height: 100px;
+  background-color: #dadce0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.9) contrast(1.05);
+}
+
+.card-body {
+  padding: 16px;
+  flex-grow: 1;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.card-subtitle {
+  font-size: 14px;
+  color: #5f6368;
+  margin-bottom: 16px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.test-button {
+  width: 100%;
+  padding: 8px 16px;
+  height: 32px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.test-button a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.test-button:hover {
+  background-color: #1976d2;
+}
+
+.retry-button {
+  padding: 8px 16px;
+  height: 32px;
+  width: 100px;
+  background-color: #f38a21;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.retry-button:hover {
+  background-color: #97591b;
+}
+
+.score-circle {
+  width: 80px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: white;
+}
+
+.score-circle.success {
+  background-color: #4caf50;
+}
+
+.score-circle.failure {
+  background-color: #f44336;
+}
+
+/* === ФУТЕР === */
+.footer-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.footer-text a {
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 13px;
+  color: #777;
+}
+
+/* === МЕДИА === */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 20px;
+  }
+}
