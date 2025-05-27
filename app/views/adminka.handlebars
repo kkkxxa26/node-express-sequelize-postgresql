@@ -1,0 +1,244 @@
+
+<header>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <div class="header-left-text">Админ-панель</div>
+    
+  <div class="header-right">
+    <div class="user-avatar">
+       <i class="fas fa-user"></i>
+       <div class="site-header">{{user.dataValues.name}}</div>
+    </div>
+
+    <div class="logout-icon" onclick="handleLogout()" title="Выйти">
+      <i class="fas fa-sign-out-alt"></i>
+    </div>
+</header>
+
+<body>
+<div class="nav-buttons">
+  <button class="nav-btn active" data-section="users-section">Пользователи</button>
+  <button class="nav-btn" data-section="lectures-section">Лекции</button>
+  <button class="nav-btn" data-section="tests-section">Тесты</button>
+</div>
+
+<div class="section-grid">
+
+
+<!-- Секция пользователей -->
+<div id="users-section" class="section active">
+  <h2>Список пользователей</h2>
+  <table id="user-table" class="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>ФИО</th>
+        <th>Email</th>
+        <th>Телефон</th>
+        <th>Дата рождения</th>
+        <th>Пол</th>
+        <th>Роль</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+   
+
+<!-- Секция лекций -->
+<div id="lectures-section" class="section" style="display: none;">
+  <h2>Список лекций</h2>
+  <table id="lecture-table" class="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Заголовок</th>
+        <th>Описание</th>
+        <th>Дата создания</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+
+<!-- Секция тестов -->
+<div id="tests-section" class="section" style="display: none;">
+  <h2>Список тестов</h2>
+  <table id="test-table" class="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Заголовок</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+</div>
+
+  <!-- Подключение jQuery и логика -->
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    // Переключение секций
+    $('.nav-btn').on('click', function () {
+      const target = $(this).data('section');
+
+      // Переключение активной кнопки
+      $('.nav-btn').removeClass('active');
+      $(this).addClass('active');
+
+      // Показать нужную секцию
+      $('.section').hide();
+      $('#' + target).show();
+
+      // Загрузка данных по секциям
+      if (target === 'lectures-section') {
+        loadLectures();
+      } else if (target === 'tests-section') {
+        loadTests();
+      } else {
+        loadUsers();
+      }
+    });
+    
+// Загрузка юзера
+function loadUsers() {
+  const tbody = $('#user-table tbody');
+  tbody.empty();
+  $.ajax({
+    url: '/api/users',
+    method: 'GET',
+    dataType: 'json',
+    success: function (data) {
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.append('<tr><td colspan="7">Нет пользователей.</td></tr>');
+        return;
+      }
+      data.forEach(function (user) {
+        const row = `
+          <tr>
+            <td>${user.id}</td>
+            <td>${user.surname} ${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.phoneNumber}</td>
+            <td>${new Date(user.birthDate).toLocaleDateString()}</td>
+            <td>${user.gender}</td>
+            <td>${user.role}</td>
+                  
+          <td class="action-buttons">
+           <button class="icon-button edit" onclick="editUser(${user.id})" title="Редактировать">
+              <i class="fas fa-edit"></i>
+            </button>
+
+            <button class="icon-button delete" onclick="deleteUser(${user.id})" title="Удалить">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+          </tr>
+        `;
+        tbody.append(row);
+      });
+    },
+    error: function () {
+      tbody.html('<tr><td colspan="7">Ошибка загрузки пользователей.</td></tr>');
+    }
+  });
+}
+
+  // Первая загрузка — покажем пользователей
+  loadUsers();
+
+    // Загрузка лекций
+ function loadLectures() {
+  const tbody = $('#lecture-table tbody');
+  tbody.empty();
+  $.ajax({
+    url: '/api/lections',
+    method: 'GET',
+    dataType: 'json',
+    success: function (data) {
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.append('<tr><td colspan="4">Нет доступных лекций.</td></tr>');
+        return;
+      }
+      data.forEach(function (lecture) {
+        const row = `
+          <tr>
+            <td>${lecture.id}</td>
+            <td>${lecture.title}</td>
+            <td>${lecture.description || ''}</td>
+            <td>${new Date(lecture.createdAt).toLocaleDateString()}</td>
+
+            <td class="action-buttons">
+            <button class="icon-button edit" onclick="editUser(${lecture.id})" title="Редактировать">
+              <i class="fas fa-edit"></i>
+            </button>
+            
+             <button class="icon-button delete" onclick="deleteUser(${lecture.id})" title="Удалить">
+            <i class="fas fa-trash-alt"></i>
+            </button>
+
+            </td>
+          </tr>
+        `;
+        tbody.append(row);
+      });
+    },
+    error: function () {
+      tbody.html('<tr><td colspan="4">Ошибка загрузки лекций.</td></tr>');
+    }
+  });
+}
+
+
+    // Загрузка тестов
+function loadTests() {
+  const tbody = $('#test-table tbody');
+  tbody.empty();
+  $.ajax({
+    url: '/api/lab/allHead',
+    method: 'GET',
+    dataType: 'json',
+    success: function (data) {
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.append('<tr><td colspan="4">Тесты не найдены.</td></tr>');
+        return;
+      }
+      data.forEach(function (test) {
+        const row = `
+          <tr>
+            <td>${test.id}</td>
+            <td>${test.title}</td>
+            <td class="action-buttons">
+           <button class="icon-button edit" onclick="editUser(${test.id})" title="Редактировать">
+              <i class="fas fa-edit"></i>
+            </button>
+            
+             <button class="icon-button delete" onclick="deleteUser(${test.id})" title="Удалить">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+
+            </td>
+          </tr>
+        `;
+        tbody.append(row);
+      });
+    },
+    error: function () {
+      tbody.html('<tr><td colspan="4">Ошибка загрузки тестов.</td></tr>');
+    }
+  });
+}
+
+});
+
+  function handleLogout() {
+    window.location.href = '/logout';
+  }
+
+</script>

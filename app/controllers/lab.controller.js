@@ -69,7 +69,7 @@ exports.findAllHead = async (req, res) => {
 
         // Результат — это массив из одного объекта
         const counter = result[0];
-        element.dataValues.info = {
+        data[i].dataValues.info = {
           total: counter.total_a,
           right: counter.right_a
         };

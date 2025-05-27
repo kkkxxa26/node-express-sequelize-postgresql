@@ -8,6 +8,7 @@ module.exports = app => {
   router.get("/mainpage", front.renderMP);
   router.get("/tests", front.renderTests);
   router.get("/lection", front.renderLections);
+  router.get("/adminka", front.renderAdminka);
 
   app.use(router); 
 };

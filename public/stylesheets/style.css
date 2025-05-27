@@ -203,6 +203,7 @@ header {
   display: flex;
   justify-content: left;
   align-items: center;
+  font-weight: 500;
   gap: 10px;
 }
 
@@ -290,12 +291,13 @@ h2 {
 .card-body {
   padding: 16px;
   flex-grow: 1;
+  justify-content: right;
 }
 
 .card-title {
   font-size: 18px;
   font-weight: 500;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
 }
 
 .card-subtitle {
@@ -352,25 +354,38 @@ h2 {
 .retry-button:hover {
   background-color: #97591b;
 }
-
 .score-circle {
-  width: 80px;
+  width: auto;
+  padding: 6px;
   height: 32px;
-  border-radius: 6px;
-  display: flex;
+  border-radius: 8px;
+  font-size: 15px;
+  display: inline-block;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  margin: 10px auto;
   color: white;
+  white-space: nowrap;
 }
 
 .score-circle.success {
-  background-color: #4caf50;
+  background-color: #28a745; /* зелёный */
 }
 
-.score-circle.failure {
-  background-color: #f44336;
+.score-circle.warning {
+  background-color: #ffc107; /* жёлтый */
+  color: black;
 }
+
+.score-circle.danger {
+  background-color: #dc3545; /* красный */
+}
+
+.score-circle.neutral {
+  background-color: #6c757d; /* серый */
+}
+
+
 /* === СТРАНИЦА ТЕСТОВ === */
 
 .test-container {
@@ -480,6 +495,214 @@ footer {
   font-size: 13px;
   color: #777;
 }
+
+/* === АДМИН === */
+    .admin-title {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .admin-section {
+      margin: 20px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: #333;
+    }
+
+    .item-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .item {
+      background: white;
+      flex-direction:column ;
+  justify-content: left;
+  align-items: left;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .item span {
+      font-size: 16px;
+    }
+
+    .user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.user-table th {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+ .user-table td  {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.user-table th {
+  background-color: #f4f4f4;
+}
+    .nav-buttons {
+    padding: 12px;
+    display: flex;
+    gap: 15px;
+    justify-content: left;
+    margin-top: 8px;
+    padding-left: 20px;
+
+    }
+
+    .nav-buttons button {
+      width: auto;
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    .nav-buttons button:hover {
+      background-color: #6c757d;
+    }
+    .nav-buttons button.active {
+  background-color: #198754; /* зелёный оттенок */
+  color: white;
+}
+.section-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: left;
+  align-items: left;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.section {
+  width: calc(100% - 40px); /* 100% ширины минус по 20px с каждой стороны */
+  max-width: 100%; /* не ограничиваем */
+ 
+  flex-direction: column;
+  justify-content: left;
+  align-items: center;
+  background: white;
+  padding: 30px 30px 30px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .section.active {
+      display: block;
+    }
+    .actions button {
+      margin-left: 8px;
+      background: #3498db;
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .actions button.delete {
+      background: #e74c3c;
+    }
+
+    .actions button.edit {
+      background: #f39c12;
+    }
+
+    .add-button {
+      margin-top: 12px;
+      background: #2ecc71;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .add-button:hover {
+      background: #27ae60;
+    }
+
+
+/* Центрирование кнопок внутри ячейки */
+.user-table {
+  text-align: center;
+  vertical-align: middle;
+}
+
+td.action-buttons {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Стили иконок */
+.icon-button {
+  border: none;
+  width: 40px;
+  height: 40px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 32px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  margin-right: 12px;
+}
+
+.icon-button:hover {
+  background-color: #0056b3;
+}
+
+.icon-button.edit {
+  background-color: #ffc107;
+}
+
+.icon-button.edit:hover {
+  background-color: #e0a800;
+}
+
+.icon-button.delete {
+  background-color: #dc3545;
+}
+
+.icon-button.delete:hover {
+  background-color: #c82333;
+}
+
+.icon-button.add {
+  background-color: #28a745;
+}
+
+.icon-button.add:hover {
+  background-color: #218838;
+}
+
+
 
 /* === МЕДИА === */
 @media (max-width: 600px) {
