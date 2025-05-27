@@ -79,33 +79,113 @@
 </div>
 </div>
 
+
+
+<div id="confirm-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-window">
+    <p>Вы уверены, что хотите удалить пользователя?</p>
+    <div class="modal-actions">
+      <button id="confirm-yes" class="modal-btn danger">Удалить</button>
+      <button id="confirm-no" class="modal-btn">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div id="notification" style="
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 1000;
+">Пользователь удалён</div>
+
+
+
   <!-- Подключение jQuery и логика -->
  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-  $(document).ready(function () {
-    // Переключение секций
-    $('.nav-btn').on('click', function () {
-      const target = $(this).data('section');
 
-      // Переключение активной кнопки
-      $('.nav-btn').removeClass('active');
-      $(this).addClass('active');
+function showNotification(message) {
+  const notification = $('#notification');
+  notification.text(message).fadeIn();
 
-      // Показать нужную секцию
-      $('.section').hide();
-      $('#' + target).show();
+  setTimeout(() => {
+    notification.fadeOut();
+  }, 3000); // исчезнет через 3 секунды
+}
 
-      // Загрузка данных по секциям
-      if (target === 'lectures-section') {
-        loadLectures();
-      } else if (target === 'tests-section') {
-        loadTests();
-      } else {
-        loadUsers();
-      }
-    });
-    
+
+let userToDeleteId = null;
+
+function deleteUser(id) {
+  userToDeleteId = id;
+  $('#confirm-modal').fadeIn();
+}
+// При нажатии "Удалить"
+$('#confirm-yes').on('click', function () {
+  if (!userToDeleteId) return;
+
+  $.ajax({
+    url: `/api/users/${userToDeleteId}`,
+    method: 'DELETE',
+    success: () => {
+      $('#confirm-modal').fadeOut();
+      userToDeleteId = null;
+      console.log("Таблица обновляется")
+      loadUsers();
+      showNotification("Пользователь удалён");
+     // alert("Пользователь удалён");
+    },
+    error: () => {
+      $('#confirm-modal').fadeOut();
+      userToDeleteId = null;
+      alert("Ошибка при удалении пользователя");
+    }
+  });
+});
+
+// При нажатии "Отмена"
+$('#confirm-no').on('click', function () {
+  userToDeleteId = null;
+  $('#confirm-modal').fadeOut();
+});
+
+
+// Удаление лекции
+function deleteLecture(id) {
+  if (!confirm("Удалить лекцию?")) return;
+  $.ajax({
+    url: `/api/lections/${id}`,
+    method: 'DELETE',
+    success: () => {
+      alert("Лекция удалена");
+      loadLectures();
+    },
+    error: () => alert("Ошибка при удалении лекции")
+  });
+}
+
+// Удаление теста
+function deleteTest(id) {
+  if (!confirm("Удалить тест?")) return;
+  $.ajax({
+    url: `/api/lab/deleteHead/${id}`,
+    method: 'DELETE',
+    success: () => {
+      alert("Тест удалён");
+      loadTests();
+    },
+    error: () => alert("Ошибка при удалении теста")
+  });
+}
+
+
 // Загрузка юзера
 function loadUsers() {
   const tbody = $('#user-table tbody');
@@ -135,9 +215,10 @@ function loadUsers() {
               <i class="fas fa-edit"></i>
             </button>
 
-            <button class="icon-button delete" onclick="deleteUser(${user.id})" title="Удалить">
-              <i class="fas fa-trash-alt"></i>
-            </button>
+          <button type ="button" class="icon-button delete" onclick="deleteUser(${user.id})" title="Удалить">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+
           </td>
           </tr>
         `;
@@ -149,6 +230,34 @@ function loadUsers() {
     }
   });
 }
+
+
+  $(document).ready(function () {
+
+
+
+    // Переключение секций
+    $('.nav-btn').on('click', function () {
+      const target = $(this).data('section');
+
+      // Переключение активной кнопки
+      $('.nav-btn').removeClass('active');
+      $(this).addClass('active');
+
+      // Показать нужную секцию
+      $('.section').hide();
+      $('#' + target).show();
+
+      // Загрузка данных по секциям
+      if (target === 'lectures-section') {
+        loadLectures();
+      } else if (target === 'tests-section') {
+        loadTests();
+      } else {
+        loadUsers();
+      }
+    });
+
 
   // Первая загрузка — покажем пользователей
   loadUsers();
@@ -175,11 +284,11 @@ function loadUsers() {
             <td>${new Date(lecture.createdAt).toLocaleDateString()}</td>
 
             <td class="action-buttons">
-            <button class="icon-button edit" onclick="editUser(${lecture.id})" title="Редактировать">
+            <button class="icon-button edit" onclick="ediLecture(${lecture.id})" title="Редактировать">
               <i class="fas fa-edit"></i>
             </button>
             
-             <button class="icon-button delete" onclick="deleteUser(${lecture.id})" title="Удалить">
+             <button class="icon-button delete" onclick="deleteLecture(${lecture.id})" title="Удалить">
             <i class="fas fa-trash-alt"></i>
             </button>
 
@@ -215,11 +324,11 @@ function loadTests() {
             <td>${test.id}</td>
             <td>${test.title}</td>
             <td class="action-buttons">
-           <button class="icon-button edit" onclick="editUser(${test.id})" title="Редактировать">
+           <button class="icon-button edit" onclick="editTest(${test.id})" title="Редактировать">
               <i class="fas fa-edit"></i>
             </button>
             
-             <button class="icon-button delete" onclick="deleteUser(${test.id})" title="Удалить">
+             <button class="icon-button delete" onclick="deleteTest(${test.id})" title="Удалить">
               <i class="fas fa-trash-alt"></i>
             </button>
 
@@ -242,3 +351,5 @@ function loadTests() {
   }
 
 </script>
+
+</body>
