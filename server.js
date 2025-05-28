@@ -1,10 +1,14 @@
 // Импорт необходимых библиотек
+
 const express = require("express");
 const cors = require("cors");
 const path = require('path')
 const handlebars = require("handlebars")
 
 const app = express();
+
+app.use(express.json()); // <-- ОБЯЗАТЕЛЬНО
+app.use(express.urlencoded({ extended: true }));
 
 // Настройка CORS для разрешения запросов с другого порта (фронт на 8081)
 var corsOptions = {

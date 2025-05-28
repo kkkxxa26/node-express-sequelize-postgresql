@@ -8,6 +8,30 @@ const Op = db.Sequelize.Op;
 // lection это объект(запись) с информацией об одной лекции 
 // Lections это модель таблицы которая ее описывает в бд
 
+exports.create = (req, res) => {
+  console.log("Тело запроса:", req.body); // <--- добавь это
+
+  if (!req.body.title || !req.body.content) {
+    res.status(400).send({ message: "ниче нет" });
+    return;
+  }
+
+  const lection = {
+    title: req.body.title,
+    content: req.body.content
+  };
+
+  Lections.create(lection)
+    .then(data => res.send(data))
+    .catch(err => {
+      console.error("Ошибка при создании лекции:", err);
+      res.status(500).send({
+        message: err.message || "Произошла ошибка при создании."
+      });
+    });
+};
+
+/*
 exports.create = (req, res) => { // "/", lections.create 
   // Валидация request
   if (!req.body.title || !req.body.content) { // если в req.body !(нет) title || content
@@ -36,6 +60,7 @@ exports.create = (req, res) => { // "/", lections.create
       });
     });
 };
+*/
 
 // Получить все лекции из бд
 // router.get("/", lections.findAll);

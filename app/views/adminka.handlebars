@@ -131,15 +131,15 @@
 
       $('#form-fields').empty();
 
-      if (entityType === 'lecture') {
-        $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать лекцию' : 'Добавить лекцию');
-        $('#form-fields').append(`
-          <label>Название</label>
-          <input type="text" name="title" required value="${entityData?.title || ''}">
-          <label>Описание</label>
-          <textarea name="description">${entityData?.description || ''}</textarea>
-        `);
-      } else if (entityType === 'test') {
+    if (entityType === 'lecture') {
+      $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать лекцию' : 'Добавить лекцию');
+      $('#form-fields').append(`
+        <label>Название</label>
+        <input type="text" name="title" required value="${entityData?.title || ''}">
+        <label>Содержимое</label>
+        <textarea name="content" required>${entityData?.content || ''}</textarea>
+      `);
+    } else if (entityType === 'test') {
         $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать тест' : 'Добавить тест');
         $('#form-fields').append(`
           <label>Название</label>
@@ -167,9 +167,9 @@
       let method = formMode === 'edit' ? 'PUT' : 'POST';
 
       if (currentEntityType === 'lecture') {
-        url = formMode === 'edit' ? `/api/lections/${currentEditId}` : '/api/lections';
+        url = formMode === 'edit' ? `/api/lections/:id${currentEditId}` : '/api/lections';
       } else if (currentEntityType === 'test') {
-        url = formMode === 'edit' ? `/api/lab/updateHead/${currentEditId}` : '/api/lab/addHead';
+        url = formMode === 'edit' ? `/api/lab/head/${currentEditId}` : '/api/lab/head';
       }
 
       $.ajax({
@@ -193,7 +193,7 @@
     }
 
     function editTest(id) {
-      $.get(`/api/lab/getHead/${id}`, data => openFormModal('test', data));
+      $.get(`/api/lab/allHead/${id}`, data => openFormModal('test', data));
     }
 
     // Подтверждение и удаление сущностей
@@ -213,7 +213,7 @@
       switch (itemToDelete.type) {
         case 'user': url = `/api/users/${itemToDelete.id}`; break;
         case 'lecture': url = `/api/lections/${itemToDelete.id}`; break;
-        case 'test': url = `/api/lab/deleteHead/${itemToDelete.id}`; break;
+        case 'test': url = `/api/lab/head/${itemToDelete.id}`; break;
       }
 
       $.ajax({
@@ -284,7 +284,7 @@
             <tr>
               <td>${lecture.id}</td>
               <td>${lecture.title}</td>
-              <td>${lecture.description || ''}</td>
+              <td>${lecture.content || ''}</td>
               <td>${new Date(lecture.createdAt).toLocaleDateString()}</td>
               <td class="action-buttons">
                 <button class="icon-button edit" onclick="editLecture(${lecture.id})" title="Редактировать">
@@ -359,4 +359,4 @@
   </script>
 
 </body>
-</html>
+

@@ -24,7 +24,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // Импорт и инициализация model
-db.lections = require("./lections.model.js")(sequelize, Sequelize); // lection model 
+db.lections = require("./lections.model.js")(sequelize,Sequelize); // lection model 
 db.users = require("./users.model.js")(sequelize, Sequelize); // users model 
 db.labHead = require("./labHead.model.js")(sequelize, Sequelize); // labHead model 
 db.labBody = require("./labBody.model.js")(sequelize, Sequelize); // labBody model 
