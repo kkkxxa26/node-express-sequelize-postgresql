@@ -1,10 +1,12 @@
 const db = require("../models");
+
+//_______________________________ user _______________________________
+
 const Users = db.users;
 const Op = db.Sequelize.Op; 
 
 // user это объект(запись) с информацией об одной лекции 
 // User это модель таблицы которая ее описывает в бд
-//_______________________________ user _______________________________
 
 exports.create = (req, res) => { //"/", users.create 
   // Валидация request
@@ -40,7 +42,7 @@ exports.create = (req, res) => { //"/", users.create
     });
 };
 
- // Получить все лекции 
+ // Получить все  
  //   router.get("/", user.findAll); // Получить все 
 exports.findAll = (req, res) => {
   const email = req.query.email;
@@ -58,7 +60,7 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Получить одну лекцию по ID
+// Получить одну по ID
 // router.get("/:id", user.findOne);// Получить одну по ID
 exports.findOne = (req, res) => {
   const id = req.params.id;
@@ -80,7 +82,7 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Обновить лекцию по ID 
+// Обновить по ID 
 // router.put("/:id", user.update); // Обновить одну по ID  
 exports.update = (req, res) => {
   const id = req.params.id;

@@ -1,10 +1,11 @@
 const db = require("../models");
-//controller Head/Body/Answers
+
+//_______________________________ controller Head/Body/Answers _______________________________
+
 const LabHead = db.labHead;
 const LabBody = db.labBody;
 const LabAnswers= db.labAnswer;
 const Op = db.Sequelize.Op; 
-
 
 //_______________________________ Head_______________________________
 

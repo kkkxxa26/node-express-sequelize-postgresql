@@ -1,5 +1,6 @@
 const db = require("../models");
-//controller Front unique
+
+//_______________________________ controller Front unique _______________________________
 
 exports.renderMain=(req,res)=>{
 
@@ -10,7 +11,7 @@ exports.renderReg=(req,res)=>{
   res.render("register");
 };
 exports.renderMP=(req,res)=>{
-//  console.log("UU",req.user);
+// console.log("UU",req.user);
   res.render("mainpage",{user:req.user});
 };
 exports.renderTests=(req,res)=>{

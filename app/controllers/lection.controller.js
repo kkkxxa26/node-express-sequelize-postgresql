@@ -1,11 +1,12 @@
 const db = require("../models");
+
+//_______________________________ lection _______________________________
+
 const Lections = db.lections;
 const Op = db.Sequelize.Op; 
 
 // lection это объект(запись) с информацией об одной лекции 
 // Lections это модель таблицы которая ее описывает в бд
-
-//_______________________________ lection _______________________________
 
 exports.create = (req, res) => { // "/", lections.create 
   // Валидация request

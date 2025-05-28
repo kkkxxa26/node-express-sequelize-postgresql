@@ -1,7 +1,9 @@
 const db = require("../models");
+
+//_______________________________ userAnswer _______________________________
+
 const UserAnswer = db.userAnswer;
 const Op = db.Sequelize.Op; 
-//_______________________________ userAnswer _______________________________
 
 exports.create = (req, res) => {  
   if (!req.body.lab_body_Id || !req.body.lab_answers_Id) { 
