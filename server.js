@@ -21,16 +21,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Подключение и настройка Passport.js для аутентификации
 const passport = require('passport')
-const session = require('express-session')
 const LocalStrategy = require('passport-local').Strategy // Стратегия аутентификации по email/паролю
 const db = require("./app/models"); // Подключение ORM моделей (Sequelize)
 
 // Настройка сессии
-app.use(session({  
-  secret: "secret", // Секрет для подписи cookie
-  resave: false , // Не сохранять сессию, если она не изменилась
-  saveUninitialized: true , // Сохранять новую, но неинициализированную сессию
-}))
+const session = require('express-session');
+const FileStore = require('session-file-store')(session);
+
+app.use(session({
+  store: new FileStore({
+    path: './sessions',   // Папка, где будут храниться сессии
+    ttl: 3600,            // Время жизни сессии в секундах (1 час)
+    retries: 1            // Повторные попытки при ошибке чтения
+  }),
+  secret: "secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 3600000       // 1 час в миллисекундах
+  }
+}));
+
 
 // Инициализация Passport
 app.use(passport.initialize()) // Инициализация Passport
@@ -119,9 +130,10 @@ require("./app/routes/users.routes")(app); // подключаем файл ро
 require("./app/routes/front.routes")(app); // подключаем файл роутов front
 require("./app/routes/lab.routes")(app); // подключаем файл роутов lab
 require("./app/routes/userAnswer.routes")(app); // подключаем файл роутов usersAnswers
+require("./app/routes/register.routes")(app);
 
 // Запуск сервера на заданном порту (по умолчанию 8080)
 const PORT = process.env.PORT || 8080;  
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+  console.log(`Сервер запущен на порту ${PORT}.`);
 });

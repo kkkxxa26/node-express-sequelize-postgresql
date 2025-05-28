@@ -1,185 +1,213 @@
- <!-- страница регистрации -->
-  <div class="registration-container">
-     <div class="form-container">
-      <h2>Регистрация</h2>
-      <div class="form-content">
+<!-- страница регистрации -->
+<div class="registration-container">
+  <div class="form-container">
+    <h2>Регистрация</h2>
+    <div class="form-content">
       <form id="registerForm" novalidate>
         <div class="form-group">
           <div>
-            <label for="regName">Имя</label>
+            <label for="name">Имя</label>
             <div class="input-wrapper">
               <i class="fas fa-user"></i>
-              <input type="text" id="regName" placeholder="Введите ваше имя" required />
+              <input type="text" id="name" placeholder="Введите ваше имя" required />
             </div>
-            <div class="error-message">Пожалуйста, введите имя</div>
+            <div class="error-message" id="nameError"></div>
           </div>
           <div>
-            <label for="regSurname">Фамилия</label>
+            <label for="surname">Фамилия</label>
             <div class="input-wrapper">
               <i class="fas fa-user"></i>
-              <input type="text" id="regSurname" placeholder="Введите фамилию" required />
+              <input type="text" id="surname" placeholder="Введите фамилию" required />
             </div>
-            <div class="error-message">Пожалуйста, введите фамилию</div>
+            <div class="error-message" id="surnameError"></div>
           </div>
         </div>
 
         <div class="form-group">
           <div>
-            <label for="regEmail">Email</label>
+            <label for="email">Email</label>
             <div class="input-wrapper">
               <i class="fas fa-envelope"></i>
-              <input type="email" id="regEmail" placeholder="Введите ваш email" required />
+              <input type="email" id="email" placeholder="Введите ваш email" required />
             </div>
-            <div class="error-message">Пожалуйста, введите корректный email</div>
+            <div class="error-message" id="emailError"></div>
           </div>
-
           <div>
-            <label for="regPhone">Номер телефона</label>
-          <div class="input-wrapper">
-            <i class="fas fa-phone"></i>
-            <input type="tel" id="regPhone" placeholder="Введите номер телефона" required />
-          </div>
-          <div class="error-message">Пожалуйста, введите номер телефона</div>
+            <label for="phoneNumber">Номер телефона</label>
+            <div class="input-wrapper">
+              <i class="fas fa-phone"></i>
+              <input type="tel" id="phoneNumber" placeholder="Введите номер телефона" required />
+            </div>
+            <div class="error-message" id="phoneError"></div>
           </div>
         </div>
 
         <div class="form-group">
           <div>
-            <label for="regPassword">Пароль</label>
+            <label for="password">Пароль</label>
             <div class="input-wrapper">
               <i class="fas fa-lock"></i>
-              <input type="password" id="regPassword" placeholder="Введите пароль" required/>
+              <input type="password" id="password" placeholder="Введите пароль" required />
             </div>
-            <div class="error-message">Пароль должен быть не менее 6 символов</div>
+            <div class="error-message" id="passwordError"></div>
           </div>
           <div>
-            <label for="regPasswordCheck">Подтвердите пароль</label>
+            <label for="passwordCheck">Подтвердите пароль</label>
             <div class="input-wrapper">
               <i class="fas fa-lock"></i>
-              <input type="password" id="regPasswordCheck" placeholder="Повторите пароль" required />
+              <input type="password" id="passwordCheck" placeholder="Повторите пароль" required />
             </div>
-            <div class="error-message">Пароли должны совпадать</div>
+            <div class="error-message" id="passwordCheckError"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div>
+            <label for="birthDate">Дата рождения</label>
+            <div class="input-wrapper">
+              <i class="fas fa-calendar-alt"></i>
+              <input type="date" id="birthDate" name="birthDate" required />
+            </div>
+            <div class="error-message" id="birthDateError"></div>
+          </div>
+          <div>
+            <label for="gender">Пол</label>
+            <div class="input-wrapper">
+              <i class="fas fa-venus-mars"></i>
+              <select id="gender" name="gender" required>
+                <option value="" disabled selected>Выберите пол</option>
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+                <option value="other">Другое</option>
+              </select>
+            </div>
+            <div class="error-message" id="genderError"></div>
           </div>
         </div>
 
         <div class="button-wrapper">
           <button type="submit">Далее</button>
         </div>
+
         <div class="footer-text">
           Уже есть аккаунт? <a href="./login">Войти</a>
         </div>
-      </div>
       </form>
 
-               <!-- Картинка внизу -->
-        <div class="bottom-image-wrapper">
-          <img src="https://enactus.kg/wp-content/uploads/2022/04/kgtu-logo.png" alt="Логотип" class="bottom-image" />
-        </div>
-
+      <div class="bottom-image-wrapper">
+        <img src="https://enactus.kg/wp-content/uploads/2022/04/kgtu-logo.png" alt="Логотип" class="bottom-image" />
+      </div>
     </div>
   </div>
+</div>
 
-  <script>
-    const form = document.getElementById('registerForm');
-    const nameInput = document.getElementById('regName');
-    const surnameInput = document.getElementById('regSurname');
-    const emailInput = document.getElementById('regEmail');
-    const phoneInput = document.getElementById('regPhone');
-    const passwordInput = document.getElementById('regPassword');
-    const passwordCheckInput = document.getElementById('regPasswordCheck');
 
-    function isValidEmail(email) {
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return re.test(String(email).toLowerCase());
-    }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const form = document.getElementById('registerForm');
 
-    function validateForm() {
-      let isValid = true;
+  function showError(id, message) {
+    document.getElementById(id).textContent = message;
+  }
 
-      if (!nameInput.value.trim()) {
-        nameInput.closest('.form-group').classList.add('error');
-        isValid = false;
+  function clearErrors() {
+    const errors = document.querySelectorAll('.error-message');
+    errors.forEach(el => el.textContent = '');
+  }
+
+  function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.toLowerCase());
+  }
+
+  form.addEventListener('submit', function (e) {
+  e.preventDefault();
+  clearErrors();
+
+  const name = document.getElementById('name').value.trim();
+  const surname = document.getElementById('surname').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phoneNumber').value.trim();
+  const password = document.getElementById('password').value;
+  const passwordCheck = document.getElementById('passwordCheck').value;
+  const birthDate = document.getElementById('birthDate').value;
+  const gender = document.getElementById('gender').value;
+
+ /* let isValid = true;
+
+  if (!name) {
+    showError('nameError', 'Введите имя');
+    isValid = false;
+  }
+
+  if (!surname) {
+    showError('surnameError', 'Введите фамилию');
+    isValid = false;
+  }
+
+  if (!isValidEmail(email)) {
+    showError('emailError', 'Введите корректный email');
+    isValid = false;
+  }
+
+  if (!phone) {
+    showError('phoneError', 'Введите номер телефона');
+    isValid = false;
+  }
+
+  if (password.length < 6) {
+    showError('passwordError', 'Пароль должен быть не менее 6 символов');
+    isValid = false;
+  }
+
+  if (password !== passwordCheck) {
+    showError('passwordCheckError', 'Пароли не совпадают');
+    isValid = false;
+  }
+
+  if (!birthDate) {
+    showError('birthDateError', 'Выберите дату рождения');
+    isValid = false;
+  }
+
+  if (!gender) {
+    showError('genderError', 'Выберите пол');
+    isValid = false;
+  }
+
+  if (!isValid) return;
+*/
+  const userData = {
+    name,
+    surname,
+    email,
+    phoneNumber: phone,
+    password,
+    birthDate,
+    gender
+  };
+
+  fetch('http://localhost:8080/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify(userData)
+  })
+    .then(async res => {
+      const data = await res.json();
+      if (res.ok) {
+        alert("Регистрация успешна! Переход в систему...");
+        window.location.href = "/login";
       } else {
-        nameInput.closest('.form-group').classList.remove('error');
+        alert(data.message || "Ошибка регистрации");
       }
-
-      if (!surnameInput.value.trim()) {
-        surnameInput.closest('.form-group').classList.add('error');
-        isValid = false;
-      } else {
-        surnameInput.closest('.form-group').classList.remove('error');
-      }
-
-      if (!isValidEmail(emailInput.value)) {
-        emailInput.closest('.form-group').classList.add('error');
-        isValid = false;
-      } else {
-        emailInput.closest('.form-group').classList.remove('error');
-      }
-
-      if (!phoneInput.value.trim()) {
-        phoneInput.closest('.form-group').classList.add('error');
-        isValid = false;
-      } else {
-        phoneInput.closest('.form-group').classList.remove('error');
-      }
-
-      if (passwordInput.value.length < 6) {
-        passwordInput.closest('.form-group').classList.add('error');
-        isValid = false;
-      } else {
-        passwordInput.closest('.form-group').classList.remove('error');
-      }
-
-      if (passwordInput.value !== passwordCheckInput.value) {
-        passwordCheckInput.closest('.form-group').classList.add('error');
-        isValid = false;
-      } else {
-        passwordCheckInput.closest('.form-group').classList.remove('error');
-      }
-
-      return isValid;
-    }
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      // Сбрасываем ошибки
-      [...document.querySelectorAll('.error')].forEach(el => el.classList.remove('error'));
-
-      // Проверяем форму
-      if (!validateForm()) {
-        return;
-      }
-
-      const userData = {
-        name: nameInput.value,
-        surname: surnameInput.value,
-        email: emailInput.value,
-        phone: phoneInput.value,
-        password: passwordInput.value
-      };
-
-      fetch('http://localhost:3000/api/admins', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData)
-      })
-      .then(async res => {
-        const data = await res.json();
-        if (res.ok) {
-          alert("Вы успешно зарегистрированы!");
-          window.location.href = "login.html";
-        } else {
-          alert(data.message || "Ошибка регистрации");
-        }
-      })
-      .catch(err => {
-        console.error("Ошибка:", err);
-        alert("Не удалось подключиться к серверу");
-      });
+    })
+    .catch(err => {
+      console.error("Ошибка:", err);
+      alert("Не удалось подключиться к серверу");
     });
-  </script>
+   });
 
+</script>

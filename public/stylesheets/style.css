@@ -30,6 +30,26 @@ body {
 
 
 /* === ФОРМА РЕГИСТРАЦИИ === */
+input[type="date"],
+select {
+  width: 320px;
+  padding: 12px 14px 12px 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-color: white;
+}
+
+select:invalid {
+  color: #999;
+}
+
+select option {
+  color: #333;
+}
+
 .form-container {
   display: flex;
   flex-direction: column;
@@ -190,7 +210,7 @@ header {
 .site-header {
   font-size: 16px;
   line-height: 1.1;
-  justify-content: center;
+  margin-right:6px;
 }
 
 .header-right {
@@ -703,36 +723,35 @@ td.action-buttons {
 }
 
 /* === МОДАЛКА === */
-  .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); z-index: 9999;
-    display: flex; justify-content: center; align-items: center;
-  }
+ 
+  .floating-add-btn {
 
-  .modal-window {
-    background: #fff; padding: 20px; border-radius: 10px;
-    max-width: 400px; width: 100%; text-align: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  }
+  margin-top: 24px;
+  width: 220px;
+  height: 36px;
+  bottom: 20px;
+  right: 30px;
+  padding: 10px 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+  transition: background-color 0.2s ease-in-out;
+}
 
-  .modal-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-around;
-    gap: 14px;
-  }
-    
+.floating-add-btn:hover {
+  background-color: #0056b3;
+}
 
-  .modal-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    
-  }
-
-  .modal-btn.danger { background-color: #e74c3c; color: white; }
-  .modal-btn:not(.danger) { background-color: #ccc; }
+.table-footer {
+  position: relative;
+  min-height: 60px;
+  justify-content: right;
+  display: flex;
+}
 
 
 /* === МЕДИА === */
