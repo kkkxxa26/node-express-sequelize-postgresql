@@ -167,7 +167,7 @@
       let method = formMode === 'edit' ? 'PUT' : 'POST';
 
       if (currentEntityType === 'lecture') {
-        url = formMode === 'edit' ? `/api/lections/:id${currentEditId}` : '/api/lections';
+        url = formMode === 'edit' ? `/api/lections/:id ${currentEditId}` : '/api/lections/:id';
       } else if (currentEntityType === 'test') {
         url = formMode === 'edit' ? `/api/lab/head/${currentEditId}` : '/api/lab/head';
       }
