@@ -101,7 +101,7 @@ select option {
 }
 
 label {
-  margin-bottom: 6px;
+  margin-bottom: 12px;
   font-size: 16px;
 }
 
@@ -109,6 +109,7 @@ label {
   position: relative;
   display: flex;
   justify-content: center;
+  margin-top: 6px;
 }
 
 .input-wrapper i {
