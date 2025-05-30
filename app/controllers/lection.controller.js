@@ -30,38 +30,6 @@ exports.create = (req, res) => {
       });
     });
 };
-
-/*
-exports.create = (req, res) => { // "/", lections.create 
-  // Валидация request
-  if (!req.body.title || !req.body.content) { // если в req.body !(нет) title || content
-    res.status(400).send({ // то выводим статус 400(ошибка) с сообщением 
-      message: "ниче нет" //само соообщение 
-    });
-    return;
-  }
-
-  // иначе создаем объект lection с полями 
-  const lection = { 
-    title: req.body.title, //поля lection
-    content: req.body.content //поля lection
-  };
-
-// Сохраняем Lections в бд
-  Lections.create(lection) // create в готовой базе создаем строчку 
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {//иначе попадаем в .catch()
-      console.error("Ошибка при создании лекции:", err); // выводим ошибку в консоль
-      res.status(500).send({//выдаем ответ с кодом 500 и сообщением 
-        message://сообщение которое мы выодим
-          err.message || "Произошла ошибка при создании."
-      });
-    });
-};
-*/
-
 // Получить все лекции из бд
 // router.get("/", lections.findAll);
 exports.findAll = (req, res) => {  // .findAll()—получаем все записи, подходящие под условие

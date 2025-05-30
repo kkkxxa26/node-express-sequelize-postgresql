@@ -4,9 +4,9 @@ module.exports = app => {
   const { registerUser } = require("../controllers/register.controller");
 
   const router = express.Router();
-  router.post("/register", registerUser);
+  router.post("/register", registerUser);  // Обработка POST-запроса на регистрацию
 
-  app.use("/", router);
+  app.use("/", router); // Подключение маршрутов к приложению
 };
 
 
