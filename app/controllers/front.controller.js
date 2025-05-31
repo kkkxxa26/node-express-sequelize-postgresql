@@ -10,10 +10,14 @@ exports.renderReg=(req,res)=>{
 
   res.render("register");
 };
-exports.renderMP=(req,res)=>{
-// console.log("UU",req.user);
-  res.render("mainpage",{user:req.user});
+exports.renderMP = (req, res) => {
+    if (req.user.role === "admin") {
+        res.redirect("/adminka");
+    } else {
+        res.render("mainpage", { user: req.user });
+    }
 };
+
 exports.renderTests=(req,res)=>{
 
   res.render("tests");

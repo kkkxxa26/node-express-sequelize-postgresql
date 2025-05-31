@@ -52,7 +52,7 @@ exports.findAll = (req, res) => {  // .findAll()—получаем все за�
 // router.get("/:id", lections.findOne);
 exports.findOne = (req, res) => {
   const id = req.params.id; // получаемм id из парамтеров(params) req(сам запрос откуда приходят все данные)
-  console.log(req.params, 111); //логируем 
+  console.log(req.params, "Получить одну лекцию по ID"); //логируем 
   
   Lections.findByPk(id) // ищем запись в базе данных по Primary Key
     .then(data => {

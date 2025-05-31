@@ -15,18 +15,29 @@
 /* Основное окно */
 .modal-window {
   background-color: #fff;
-  padding: 30px 25px;
+  padding: 0; /* убираем внутренние отступы, перенесем их внутрь */
   border-radius: 12px;
-  max-width: 450px;
+  max-width: 650px;
   width: 100%;
+  max-height: 90vh; /* адаптивная высота под окно браузера */
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-in-out;
   text-align: center;
+  overflow: hidden; /* скрываем общий скролл */
 }
+
+.modal-content {
+  padding: 2px 16px 16px 16px;
+  overflow-y: auto;
+  flex-grow: 1; /* занимает всё доступное пространство */
+}
+
 
 /* Заголовок */
 .modal-window h3 {
-  margin-top: 0;
+  margin-top: 16px;
   font-size: 20px;
   margin-bottom: 20px;
   color: #333;
@@ -63,11 +74,17 @@
 
 /* Кнопки */
 .modal-actions {
+  padding: 15px 25px;
+  border-top: 1px solid #eee;
+  background-color: #fafafa;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 20px;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
 }
+
 
 .modal-btn {
   padding: 10px 18px;

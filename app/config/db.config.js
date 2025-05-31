@@ -11,4 +11,3 @@ module.exports = { // Конфигурации подключения к Postgre
     idle: 10000
   },
 };
-
