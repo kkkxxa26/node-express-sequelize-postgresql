@@ -689,7 +689,6 @@ td.action-buttons {
   vertical-align: middle;
   height: 60px;
   width: 100%;
- /* border-color: #ffffff;*/
   display: flex;
   justify-content: center;
   gap: 10px; 

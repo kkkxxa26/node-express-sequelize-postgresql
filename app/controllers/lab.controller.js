@@ -44,7 +44,6 @@ exports.findAllHead = async (req, res) => {
     const user = req.user;
 
     const data = await LabHead.findAll({ where: condition });
-
     // Если пользователь авторизован — делаем доп. вычисления
     if (user) {
       const user_id = user.id;

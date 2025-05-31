@@ -23,6 +23,7 @@
     <button class="nav-btn active" data-section="users-section">Пользователи</button>
     <button class="nav-btn" data-section="lectures-section">Лекции</button>
     <button class="nav-btn" data-section="tests-section">Тесты</button>
+    <button class="nav-btn" data-section="stats-section">Статистика</button>
   </div>
 
   <!-- Контейнер для секций -->
@@ -90,6 +91,14 @@
       </div>
     </div>
 
+    <!-- Секция статистики -->
+    <div id="stats-section" class="section" style="display: none;">
+      <h2>Статистика</h2>
+      <!-- Здесь вы можете отобразить графики, таблицы, метрики и т.д. -->
+      <p>Раздел для отображения статистики по пользователям, лекциям и тестам.</p>
+    </div>
+
+
   </div>
 
   <!-- Модальное окно формы -->
@@ -127,46 +136,81 @@
 
     // Открытие модального окна с формой
 function openFormModal(entityType, entityData = null) {
-  formMode = entityData ? 'edit' : 'add';
-  currentEntityType = entityType;
-  currentEditId = entityData?.id || null;
+    formMode = entityData ? 'edit' : 'add';
+    currentEntityType = entityType;
+    currentEditId = entityData?.id || null;
+    $('#form-fields').empty();
 
-  $('#form-fields').empty();
-
-  if (entityType === 'lecture') {
-    $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать лекцию' : 'Добавить лекцию');
-    $('#form-fields').append(`
-      <label>Название</label>
-      <input type="text" name="title" required value="${entityData?.title || ''}">
-      <label>Содержимое</label>
-      <textarea name="content" required>${entityData?.content || ''}</textarea>
-    `);
-  } else if (entityType === 'test') {
-    $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать тест' : 'Добавить тест');
-    $('#form-fields').append(`
-    `);
-
-    // Только при редактировании теста — выводим вопросы и ответы
-    if (formMode === 'edit' && entityData.lab_bodies) {
-      entityData.lab_bodies.forEach((question, qIndex) => {
-        const questionId = `question-${qIndex}`;
+    if (entityType === 'lecture') {
+        $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать лекцию' : 'Добавить лекцию');
         $('#form-fields').append(`
-          <div class="question-block">
-            <label>Вопрос ${qIndex + 1}</label>
-            <input type="text" name="question-${question.id}" value="${question.title}">
-            <div class="answer-block">
-              ${question.lab_answers.map((ans, aIndex) => `
-                <label>Ответ ${aIndex + 1}</label>
-                <input type="text" name="answer-${question.id}-${ans.id}" value="${ans.title}">
-              `).join('')}
-            </div>
-          </div>
+            <label>Название</label>
+            <input type="text" name="title" required value="${entityData?.title || ''}">
+            <label>Содержимое</label>
+            <textarea name="content" required>${entityData?.content || ''}</textarea>
         `);
-      });
-    }
-  }
+    } else if (entityType === 'test') {
+        $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать тест' : 'Добавить тест');
 
-  $('#form-modal').fadeIn();
+        let questionsHtml = '';
+        if (formMode === 'edit' && entityData.lab_bodies) {
+            entityData.lab_bodies.forEach((question, qIndex) => {
+                const questionId = `question-${qIndex}`;
+                let answersHtml = '';
+                if (question.lab_answers && Array.isArray(question.lab_answers)) {
+                    answersHtml = question.lab_answers.map((ans, aIndex) =>
+                        `<input type="text" name="answer-${question.id}-${ans.id}" value="${ans.title}">`
+                    ).join('');
+                }
+                questionsHtml += `
+                    <div class="question-block">
+                        <label>Вопрос ${qIndex + 1}</label>
+                        <input type="text" name="question-${question.id}" value="${question.title}">
+                        <div class="answer-block">${answersHtml}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Пример поля для нового теста
+        if (formMode === 'add') {
+            questionsHtml = `
+                <label>Новый вопрос</label>
+                <input type="text" name="newQuestion" placeholder="Введите вопрос">
+                <label>Правильный ответ</label>
+                <input type="text" name="newAnswer" placeholder="Введите правильный ответ">
+            `;
+        }
+
+        $('#form-fields').append(questionsHtml);
+
+    } else if (entityType === 'user') {
+        $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать пользователя' : 'Добавить пользователя');
+        $('#form-fields').append(`
+            <label>Фамилия</label>
+            <input type="text" name="surname" required value="${entityData?.surname || ''}">
+            <label>Имя</label>
+            <input type="text" name="name" required value="${entityData?.name || ''}">
+            <label>Email</label>
+            <input type="email" name="email" required value="${entityData?.email || ''}">
+            <label>Телефон</label>
+            <input type="text" name="phoneNumber" value="${entityData?.phoneNumber || ''}">
+            <label>Дата рождения</label>
+            <input type="date" name="birthDate" value="${entityData?.birthDate?.split('T')[0] || ''}">
+            <label>Пол</label>
+            <select name="gender">
+              <option value="Мужской" ${entityData?.gender === 'Мужской' ? 'selected' : ''}>Мужской</option>
+              <option value="Женский" ${entityData?.gender === 'Женский' ? 'selected' : ''}>Женский</option>
+            </select>
+            <label>Роль</label>
+            <select name="role">
+              <option value="user" ${entityData?.role === 'user' ? 'selected' : ''}>Пользователь</option>
+              <option value="admin" ${entityData?.role === 'admin' ? 'selected' : ''}>Администратор</option>
+            </select>
+        `);
+    }
+
+    $('#form-modal').fadeIn();
 }
 
 
@@ -187,7 +231,9 @@ function openFormModal(entityType, entityData = null) {
       if (currentEntityType === 'lecture') {
         url = formMode === 'edit' ? `/api/lections/${currentEditId}` : '/api/lections/';
       } else if (currentEntityType === 'test') {
-        url = formMode === 'edit' ? `/api/lab/head${currentEditId}` : '/api/lab/head/head';
+        url = formMode === 'edit' ? `/api/lab/head/${currentEditId}` : '/api/lab/head/';
+      } else if (currentEntityType === 'user') {
+        url = formMode === 'edit' ? `/api/users/${currentEditId}` : '/api/users/';
       }
 
       $.ajax({
@@ -200,6 +246,7 @@ function openFormModal(entityType, entityData = null) {
           currentEditId = null;
           if (currentEntityType === 'lecture') loadLectures();
           else if (currentEntityType === 'test') loadTests();
+          else if (currentEntityType === 'user') loadUsers();
         },
         error: () => alert("Ошибка при сохранении.")
       });
@@ -213,6 +260,11 @@ function openFormModal(entityType, entityData = null) {
     function editTest(id) {
       $.get(`/api/lab/OneHead/${id}`, data => openFormModal('test', data));
     }
+    function editUser(id) {
+     $.get(`/api/users/${id}`, data => openFormModal('user', data));
+    }
+
+
 
     // Подтверждение и удаление сущностей
     let itemToDelete = { id: null, type: null };
@@ -275,7 +327,7 @@ function openFormModal(entityType, entityData = null) {
               <td>${user.gender}</td>
               <td>${user.role}</td>
               <td class="action-buttons">
-                <button class="icon-button edit" onclick="openFormModal('user', ${user.id})" title="Редактировать">
+                <button class="icon-button edit" onclick="editUser(${user.id})" title="Редактировать">
                   <i class="fas fa-edit"></i>
                 </button>
                 <button class="icon-button delete" onclick="confirmDelete(${user.id}, 'user')" title="Удалить">
