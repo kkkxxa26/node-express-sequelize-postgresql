@@ -36,6 +36,56 @@ exports.createHead = (req, res) => {
       });
     });
 };
+exports.getUserAnswersStats = async (req, res) => {
+  try {
+    const rawResults = await db.sequelize.query(`
+      SELECT 
+        u.id AS user_id,
+        u.name,
+        lh.title AS test_title,
+        COUNT(DISTINCT lb.id) AS total_a,
+        COUNT(DISTINCT CASE 
+          WHEN la.id = ua."lab_answers_Id" THEN lb.id 
+          ELSE NULL 
+        END) AS right_a
+      FROM lab_bodies lb
+      JOIN lab_answers la 
+        ON lb.id = la."lab_body_Id" AND la.check = true
+      LEFT JOIN user_anserws ua 
+        ON lb.id = ua."lab_body_Id"
+      JOIN users u ON ua."user_Id" = u.id
+      JOIN lab_heads lh ON lb."lab_head_Id" = lh.id
+      WHERE ua."user_Id" IS NOT NULL
+      GROUP BY u.id, u.name, lh.title
+      ORDER BY u.name, lh.title
+    `, {
+      type: db.Sequelize.QueryTypes.SELECT
+    });
+
+    // Преобразуем в табличную структуру
+    const table = {};
+    const testSet = new Set();
+
+    rawResults.forEach(row => {
+      if (!table[row.name]) {
+        table[row.name] = {};
+      }
+      table[row.name][row.test_title] = `${row.right_a}/${row.total_a}`;
+      testSet.add(row.test_title);
+    });
+
+    res.json({
+      tests: Array.from(testSet),
+      users: Object.keys(table),
+      data: table
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Ошибка при получении статистики ответов."
+    });
+  }
+};
 
 exports.findAllHead = async (req, res) => {
   try {

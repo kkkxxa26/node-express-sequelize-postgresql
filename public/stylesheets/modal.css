@@ -120,6 +120,55 @@
 .modal-btn:not(.primary):not(.danger):hover {
   background-color: #c7c7c7;
 }
+.full-width-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+}
+
+.question-block {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.answer-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+/* Чекбокс посередине (по высоте) */
+.answer-item input[type="checkbox"] {
+  order: 2; /* справа */
+}
+
+.answer-text {
+    flex-grow: 1;
+}
+
+.mark-correct.selected i {
+    color: green;
+}
+
+.question-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.mark-correct, .remove-answer, .done-btn, .add-answer-btn {
+    background: #eee;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.mark-correct i, .remove-answer i {
+    pointer-events: none;
+}
 
 /* Анимация */
 @keyframes fadeIn {

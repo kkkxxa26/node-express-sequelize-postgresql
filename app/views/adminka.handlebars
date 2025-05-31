@@ -85,21 +85,26 @@
         <tbody></tbody>
       </table>
 
+
       <!-- Кнопка добавить тест -->
       <div class="table-footer">
         <button id="add-test-btn" class="floating-add-btn">Добавить тест</button>
       </div>
     </div>
 
-    <!-- Секция статистики -->
-    <div id="stats-section" class="section" style="display: none;">
-      <h2>Статистика</h2>
-      <!-- Здесь вы можете отобразить графики, таблицы, метрики и т.д. -->
-      <p>Раздел для отображения статистики по пользователям, лекциям и тестам.</p>
-    </div>
 
-
+<!-- Секция статистики -->
+<div id="stats-section" class="section" style="display: none;">
+  <div>
+    <h2>Статистика</h2>
+    <table id="stats-table" class="user-table">
+      <thead>
+        <tr id="stats-header"></tr>
+      </thead>
+      <tbody id="stats-body"></tbody>
+    </table>
   </div>
+</div>
 
   <!-- Модальное окно формы -->
   <div id="form-modal" class="modal-overlay" style="display: none;">
@@ -150,40 +155,37 @@ function openFormModal(entityType, entityData = null) {
             <textarea name="content" required>${entityData?.content || ''}</textarea>
         `);
     } else if (entityType === 'test') {
-        $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать тест' : 'Добавить тест');
+    $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать тест' : 'Добавить тест');
 
-        let questionsHtml = '';
-        if (formMode === 'edit' && entityData.lab_bodies) {
-            entityData.lab_bodies.forEach((question, qIndex) => {
-                const questionId = `question-${qIndex}`;
-                let answersHtml = '';
-                if (question.lab_answers && Array.isArray(question.lab_answers)) {
-                    answersHtml = question.lab_answers.map((ans, aIndex) =>
-                        `<input type="text" name="answer-${question.id}-${ans.id}" value="${ans.title}">`
-                    ).join('');
-                }
-                questionsHtml += `
-                    <div class="question-block">
-                        <label>Вопрос ${qIndex + 1}</label>
-                        <input type="text" name="question-${question.id}" value="${question.title}">
-                        <div class="answer-block">${answersHtml}</div>
+    let questionsHtml = '';
+    if (formMode === 'edit' && entityData.lab_bodies) {
+        entityData.lab_bodies.forEach((question, qIndex) => {
+            let answersHtml = '';
+            if (question.lab_answers && Array.isArray(question.lab_answers)) {
+                answersHtml = question.lab_answers.map((ans, aIndex) => `
+                    <div class="answer-item">
+                        <input type="checkbox" 
+                               name="answer-${question.id}-${ans.id}-correct" 
+                               ${ans.check ? 'checked' : ''}>
+                        <input type="text" name="answer-${question.id}-${ans.id}" value="${ans.title}">
                     </div>
-                `;
-            });
-        }
-
-        // Пример поля для нового теста
-        if (formMode === 'add') {
-            questionsHtml = `
-                <label>Новый вопрос</label>
-                <input type="text" name="newQuestion" placeholder="Введите вопрос">
-                <label>Правильный ответ</label>
-                <input type="text" name="newAnswer" placeholder="Введите правильный ответ">
+                `).join('');
+            }
+            questionsHtml += `
+                <div class="question-block">
+                    <label>Вопрос ${qIndex + 1}</label>
+                    <input type="text" name="question-${question.id}" value="${question.title}">
+                    <div class="answer-block">${answersHtml}</div>
+                </div>
             `;
-        }
-
-        $('#form-fields').append(questionsHtml);
-
+        });
+    }
+    $('#form-fields').append(questionsHtml);
+    // Добавление контейнера для динамического добавления вопросов и кнопки
+    $('#form-fields').append('<div id="questions-container"></div>');
+    $('#form-fields').append('<button type="button" id="add-question-btn">Добавить вопрос</button>');
+    
+    
     } else if (entityType === 'user') {
         $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать пользователя' : 'Добавить пользователя');
         $('#form-fields').append(`
@@ -212,6 +214,85 @@ function openFormModal(entityType, entityData = null) {
 
     $('#form-modal').fadeIn();
 }
+
+$(document).ready(function () {
+    let questionCounter = 0;
+
+    function createAnswerInput(questionIndex, answerIndex = '') {
+        return `
+            <div class="answer-item" data-answer-index="${answerIndex}" style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <input type="text" name="answer-${questionIndex}-${answerIndex}" placeholder="Введите ответ" class="answer-text" style="flex-grow: 1;">
+                <button type="button" class="mark-correct" title="Отметить как правильный" style="border: none; background: none; color: green; font-size: 18px;">
+                    <i class="fas fa-check"></i>
+                </button>
+                <button type="button" class="remove-answer" title="Удалить ответ" style="border: none; background: none; color: red; font-size: 18px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+    }
+
+    function createQuestionBlock(index) {
+        return `
+            <div class="question-block" data-question-index="${index}" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px;">
+                <label>Вопрос ${index + 1}</label>
+                <input type="text" name="question-${index}" placeholder="Введите вопрос" style="width: 100%; margin-bottom: 8px;">
+                <div class="answer-block">
+                    ${createAnswerInput(index, 0)}
+                </div>
+                <div class="question-actions" style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <button type="button" class="add-answer-btn">Добавить ответ</button>
+                    <button type="button" class="done-btn">Готово</button>
+                </div>
+            </div>
+        `;
+    }
+
+    $(document).on('click', '#add-question-btn', function () {
+        const block = createQuestionBlock(questionCounter++);
+        $('#form-fields').append(block);
+    });
+
+    $(document).on('click', '.add-answer-btn', function () {
+        const questionBlock = $(this).closest('.question-block');
+        const qIndex = questionBlock.data('question-index');
+        const answerBlock = questionBlock.find('.answer-block');
+        const nextIndex = answerBlock.find('.answer-item').length;
+        answerBlock.append(createAnswerInput(qIndex, nextIndex));
+    });
+
+    $(document).on('click', '.remove-answer', function () {
+        const answerBlock = $(this).closest('.answer-block');
+        if (answerBlock.find('.answer-item').length > 1) {
+            $(this).closest('.answer-item').remove();
+        } else {
+            alert('Должен быть хотя бы один ответ');
+        }
+    });
+
+    $(document).on('click', '.mark-correct', function () {
+        // Один правильный ответ на вопрос
+        $(this).closest('.answer-block').find('.mark-correct').removeClass('selected');
+        $(this).addClass('selected');
+    });
+
+    $(document).on('click', '.done-btn', function () {
+        const questionBlock = $(this).closest('.question-block');
+        const questionText = questionBlock.find('input[name^="question-"]').val();
+        const answers = [];
+        questionBlock.find('.answer-item').each(function () {
+            answers.push({
+                text: $(this).find('.answer-text').val(),
+                correct: $(this).find('.mark-correct').hasClass('selected')
+            });
+        });
+        console.log({ question: questionText, answers });
+        alert('Сохранено (смотри консоль)');
+    });
+
+    // Инициализация
+    $('#form-fields').append('<button type="button" id="add-question-btn" style="width: 100%; margin-top: 10px;">Добавить вопрос</button>');
+});
 
 
     // Закрытие формы
@@ -307,6 +388,35 @@ function openFormModal(entityType, entityData = null) {
       itemToDelete = { id: null, type: null };
       $('#confirm-modal').fadeOut();
     });
+
+
+
+function loadStats() {
+  // Загрузка детальной таблицы статистики
+  $.get('/api/lab/user-stats', res => {
+    const { tests, users, data } = res;
+
+    // Заголовок таблицы
+    let headerHtml = '<th>Пользователь</th>';
+    tests.forEach(test => {
+      headerHtml += `<th>${test}</th>`;
+    });
+    $('#stats-header').html(headerHtml);
+
+    // Тело таблицы
+    let bodyHtml = '';
+    users.forEach(user => {
+      let row = `<tr><td>${user}</td>`;
+      tests.forEach(test => {
+        const value = data[user] && data[user][test] ? data[user][test] : '-';
+        row += `<td>${value}</td>`;
+      });
+      row += '</tr>';
+      bodyHtml += row;
+    });
+    $('#stats-body').html(bodyHtml);
+  });
+}
 
     // Загрузка пользователей
     function loadUsers() {
@@ -416,7 +526,8 @@ function openFormModal(entityType, entityData = null) {
 
         if (target === 'lectures-section') loadLectures();
         else if (target === 'tests-section') loadTests();
-        else loadUsers();
+        else if (target === 'stats-section') { loadStats();
+        } else loadUsers();
       });
 
       // Кнопки добавления
@@ -426,6 +537,7 @@ function openFormModal(entityType, entityData = null) {
       // Первая загрузка пользователей
       loadUsers();
     });
+    
   </script>
 
 </body>
