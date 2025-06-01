@@ -8,7 +8,7 @@ module.exports = app => {
   router.get("/allBody", lab.findAllBody);           // Получить все тела заданий
   router.get("/allAnswer", lab.findAllAnswer);       // Получить все ответы
   router.get("/user-stats", lab.getUserAnswersStats);
-  
+
   // Создание данных
   router.post("/head", lab.createHead);              // Создать заголовок задания
   router.post("/body", lab.createBody);              // Создать тело задания
