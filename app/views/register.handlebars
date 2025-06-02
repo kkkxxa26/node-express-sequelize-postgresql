@@ -187,7 +187,7 @@
     gender
   };
 
-  fetch('8080/register', {
+  fetch('/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -208,6 +208,6 @@
       console.error("Ошибка:", err);
       alert("Не удалось подключиться к серверу");
     });
-   });
+  });
 
 </script>

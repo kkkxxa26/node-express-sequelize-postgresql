@@ -5,15 +5,18 @@ const db = require("../models");
 const LabHead = db.labHead;
 const LabBody = db.labBody;
 const LabAnswers= db.labAnswer;
+
+
 const Op = db.Sequelize.Op; 
 
 //_______________________________ Head_______________________________
 
 exports.createHead = (req, res) => { 
+  console.log(req.body , 'not work');
   // Валидация request
   if (!req.body.title) { // если в req.body !(нет) title || content
     res.status(400).send({ // то выводим статус 400(ошибка) с сообщением 
-      message: "ниче нет" //само соообщение 
+      message: "Отсутствует обязательное поле" //само соообщение 
     });
     return;
   }
@@ -114,7 +117,7 @@ LabHead.findByPk(id,{
 
 exports.updateHead = (req, res) => { 
   const id = req.params.id; 
-
+  console.log( req.body );
   LabHead.update(req.body, { // обновляем запись в бд
     where: { id : id } // где id(по какому столбцу обновляем):id(значение с которым мы сверяеся)
   })
@@ -243,7 +246,7 @@ exports.createBody = (req, res) => {
 
 exports.findAllBody = (req, res) => { 
   const head_id = req.query.head_id; 
-  var condition = head_id ? { lab_head_id: { [Op.iLike]: `%${head_id}%` } } : null;
+  const condition = head_id ? { lab_head_Id: head_id } : {};
 
   LabBody.findAll({ where: condition }) 
     .then(data => {
@@ -309,7 +312,7 @@ exports.deleteBody = (req, res) => {
 
 exports.createAnswers = (req, res) => { 
   // Валидация request
-  if (!req.body.title || !req.body.check || !req.body.lab_body_id) { 
+  if (!req.body.title || req.body.lab_body_id === undefined || req.body.check === undefined) { 
     res.status(400).send({ 
       message: "ниче нет"
     });
@@ -337,9 +340,10 @@ exports.createAnswers = (req, res) => {
 
 exports.findAllAnswer = (req, res) => { 
   const body_id = req.query.body_id; 
-  var condition = body_id ? { lab_body_id: { [Op.iLike]: `%${body_id}%` } } : null;
+  const condition = body_id ? { lab_body_Id: body_id } : {};
 
-  LabAnswer.findAll({ where: condition }) 
+
+  LabAnswers.findAll({ where: condition }) 
     .then(data => {
       res.send(data); 
     })
@@ -354,7 +358,7 @@ exports.findAllAnswer = (req, res) => {
 exports.updateAnswer = (req, res) => { 
   const id = req.params.id; 
 
-  LabAnswer.update(req.body, { 
+  LabAnswers.update(req.body, { 
     where: { id : id } 
   })
     .then(num => {
@@ -381,7 +385,7 @@ exports.deleteAnswer = (req, res) => {
   }
 
   const Id = parseInt(id); 
-  LabAnswer.destroy({ 
+  LabAnswers.destroy({ 
     where: { id: Id }  
   })
     .then(num => {
