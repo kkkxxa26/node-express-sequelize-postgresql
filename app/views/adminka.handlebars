@@ -23,6 +23,8 @@
     <button class="nav-btn active" data-section="users-section">Пользователи</button>
     <button class="nav-btn" data-section="lectures-section">Лекции</button>
     <button class="nav-btn" data-section="tests-section">Тесты</button>
+    <button class="nav-btn" id="abody" data-section="body-section">Вопросы</button>
+    <button class="nav-btn" id="aans" data-section="ans-section">Ответы</button>
     <button class="nav-btn" data-section="stats-section">Статистика</button>
   </div>
 
@@ -160,7 +162,7 @@
   
   let currentEditTestId = null;
   // Открыть модалку и загрузить данные
-  $(document).on("click", "submit", function () {
+  $(document).on("click", ".edit-test-btn", function () {
   const testId = $(this).data("id");
   currentEditTestId = testId;
   $.get(`/api/lab/head/${testId}`, function (data) {
@@ -539,8 +541,12 @@ function loadStats() {
       });
     }
 
+
+   
+
     // Загрузка тестов
     function loadTests() {
+      $('#add-test-btn').html("Добавить тест")
       const tbody = $('#test-table tbody').empty();
       $.get('/api/lab/allHead', data => {
         if (!Array.isArray(data) || data.length === 0) {
@@ -558,6 +564,9 @@ function loadStats() {
                 </button>
                 <button class="icon-button delete" onclick="confirmDelete(${test.id}, 'test')" title="Удалить">
                   <i class="fas fa-trash-alt"></i>
+                </button>
+                <button class="icon-button edit" onclick="loadLabBody(${test.id})" title="Вопросы">
+                  <i class="fas fa-question"></i>
                 </button>
               </td>
             </tr>
@@ -595,6 +604,42 @@ function loadStats() {
       // Первая загрузка пользователей
       loadUsers();
     });
+
+    function loadLabBody(head_id){
+      $('#abody').attr("style","active");
+      
+      $('#add-test-btn').html("Добавить вопрос")
+          const tbody = $('#test-table tbody').empty();
+          tbody.attr("head_id",head_id)
+
+
+      $.get('/api/lab/allBody?head_id='+head_id, data => {
+        if (!Array.isArray(data) || data.length === 0) {
+          tbody.append('<tr><td colspan="3">Вопросы не найдены.</td></tr>');
+          return;
+        }
+        data.forEach(labBody => {
+          const row = `
+            <tr>
+              <td>${labBody.id}</td>
+              <td>${labBody.title}</td>
+              <td class="action-buttons">
+                <button class="icon-button edit" onclick="editLabBody(${labBody.id})" title="Редактировать">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="icon-button delete" onclick="confirmDelete(${labBody.id}, 'test')" title="Удалить">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+                <button class="icon-button edit" onclick="loadLabAnswers(${labBody.id})" title="Ответы">
+                  <i class="fas fa-question"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+          tbody.append(row);
+        });
+      });
+    }
     
   </script>
 </body>
