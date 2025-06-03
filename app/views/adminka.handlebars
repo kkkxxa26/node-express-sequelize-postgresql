@@ -1,6 +1,5 @@
 
 <body>
-  <!-- Шапка -->
   <header>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/stylesheets/modal.css">
@@ -18,7 +17,7 @@
     </div>
   </header>
 
-  <!-- Кнопки переключения секций -->
+  <!-- секций -->
   <div class="nav-buttons">
     <button class="nav-btn active" data-section="users-section">Пользователи</button>
     <button class="nav-btn" data-section="lectures-section">Лекции</button>
@@ -66,11 +65,9 @@
         </thead>
         <tbody></tbody>
       </table>
-
-      <!-- Кнопка добавить лекцию -->
-      <div class="table-footer">
-        <button id="add-lecture-btn" class="floating-add-btn">Добавить лекцию</button>
-      </div>
+        <div class="table-footer">
+          <button id="add-lecture-btn" class="floating-add-btn">Добавить лекцию</button>
+        </div>
     </div>
 
     <!-- Секция тестов -->
@@ -86,225 +83,73 @@
         </thead>
         <tbody></tbody>
       </table>
+        <div class="table-footer">
+          <button id="add-test-btn" class="floating-add-btn">Добавить тест</button>
+        </div>
+    </div>
 
-
-      <!-- Кнопка добавить тест -->
-      <div class="table-footer">
-        <button id="add-test-btn" class="floating-add-btn">Добавить тест</button>
+    <!-- Секция статистики -->
+    <div id="stats-section" class="section" style="display: none;">
+      <div>
+        <h2>Статистика</h2>
+        <table id="stats-table" class="user-table">
+          <thead>
+            <tr id="stats-header"></tr>
+          </thead>
+          <tbody id="stats-body"></tbody>
+        </table>
       </div>
     </div>
 
-
-<!-- Секция статистики -->
-<div id="stats-section" class="section" style="display: none;">
-  <div>
-    <h2>Статистика</h2>
-    <table id="stats-table" class="user-table">
-      <thead>
-        <tr id="stats-header"></tr>
-      </thead>
-      <tbody id="stats-body"></tbody>
-    </table>
-  </div>
-</div>
-
-  <!-- Модальное окно формы -->
-  <div id="form-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-window">
-      <h3 id="form-modal-title">Форма</h3>
-     <div class="modal-content">
-        <form id="entity-form">
-          <div id="form-fields"></div>
-          <div class="modal-actions">
-          <button type="submit" class="modal-btn primary">Сохранить</button>
-          <button type="button" class="modal-btn" id="form-cancel">Отмена</button>
+    
+    <!-- Секция вопросов для выбранной лекции -->
+    <div id="body-section" class="section" style="display: none;">
+      <h2>Список вопросов</h2>
+      <table id="abody" class="user-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>ВопросВопрос</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          <div class="table-footer">
+            <button id="add-question-btn" class="floating-add-btn">Добавить вопрос</button>
           </div>
-        
-        </form>
-     </div>
-
+        </tbody>
+      </table>
     </div>
-  </div>
 
-  <!-- модалка редактирования теста -->
-  <div class="modal-overlay" id="editTestModal" style="display: none;">
-  <div class="modal-window">
-    <h3>Редактирование теста</h3>
-    <div class="modal-content">
-      <form id="editTestForm">
-        <input type="hidden" name="testId" id="editTestId">
-        <div id="edit-question-container"></div>
-        <button type="button" class="add-answer-btn full-width-btn" id="add-question-btn">+ Добавить вопрос</button>
-      </form>
-    </div>
-    <div class="modal-actions">
-      <button type="button" class="modal-btn" id="editCancelBtn">Отмена</button>
-      <button type="submit" class="modal-btn primary" id="editSaveBtn">Сохранить</button>
-    </div>
-  </div>
-</div>
-
-
-
-  <!-- Модальное окно подтверждения удаления -->
-  <div id="confirm-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-window">
-      <p id="confirm-message">Вы уверены, что хотите удалить?</p>
-      <div class="modal-actions">
-        <button id="confirm-yes" class="modal-btn danger">Удалить</button>
-        <button id="confirm-no" class="modal-btn">Отмена</button>
+    <!-- Модальное окно формы -->
+    <div id="form-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-window">
+        <h3 id="form-modal-title">Форма</h3>
+      <div class="modal-content">
+          <form id="entity-form">
+            <div id="form-fields"></div>
+            <div class="modal-actions">
+            <button type="submit" class="modal-btn primary">Сохранить</button>
+            <button type="button" class="modal-btn" id="form-cancel">Отмена</button>
+            </div>
+          </form>
+      </div>
       </div>
     </div>
-  </div>
 
-  <!-- JS логика -->
+    <!-- Модальное окно подтверждения удаления -->
+    <div id="confirm-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-window">
+        <p id="confirm-message">Вы уверены, что хотите удалить?</p>
+        <div class="modal-actions">
+          <button id="confirm-yes" class="modal-btn danger">Удалить</button>
+          <button id="confirm-no" class="modal-btn">Отмена</button>
+        </div>
+      </div>
+    </div>
+
+  <!-- ______________________________________________________________ JS логика ______________________________________________________________-->
   <script>
-  
-  let currentEditTestId = null;
-  // Открыть модалку и загрузить данные
-  $(document).on("click", ".edit-test-btn", function () {
-  const testId = $(this).data("id");
-  currentEditTestId = testId;
-  $.get(`/api/lab/head/${testId}`, function (data) {
-    $("#editTestId").val(data.id);
-    renderQuestions(data.questions || []);
-    $("#editTestModal").fadeIn(200);
-  });
-});
-
-// Закрыть модалку
-$("#editCancelBtn").on("submit", function () {
-  $("#editTestModal").fadeOut(200);
-});
-
-// Добавить новый вопрос
-$("#add-question-btn").on("click", function () {
-  const questionIndex = $(".question-block").length;
-  $("#edit-question-container").append(createQuestionBlock(null, questionIndex));
-});
-
-// Удалить вопрос
-$(document).on("click", ".remove-question", function () {
-  $(this).closest(".question-block").remove();
-});
-
-// Добавить ответ
-$(document).on("click", ".add-answer-btn", function () {
-  const questionBlock = $(this).closest(".question-block");
-  questionBlock.find(".answers-container").append(createAnswerItem());
-});
-
-// Удалить ответ
-$(document).on("click", ".remove-answer", function () {
-  $(this).closest(".answer-item").remove();
-});
-
-// Отметить правильный ответ
-$(document).on("click", ".mark-correct", function () {
-  $(this).toggleClass("selected");
-});
-
-// Сохранить изменения
-$("#editSaveBtn").on("click", function (e) {
-  e.preventDefault();
-  const testId = $("#editTestId").val();
-  const payload = {
-    questions: []
-  };
-
-  $(".question-block").each(function () {
-    const questionText = $(this).find(".question-text").val().trim();
-    const questionId = $(this).data("id") || null;
-    const answers = [];
-
-    $(this).find(".answer-item").each(function () {
-      const answerText = $(this).find(".answer-text").val().trim();
-      const isCorrect = $(this).find(".mark-correct").hasClass("selected");
-      const answerId = $(this).data("id") || null;
-
-      if (answerText) {
-        answers.push({ id: answerId, text: answerText, isCorrect });
-      }
-    });
-
-    if (questionText && answers.length > 0) {
-      payload.questions.push({
-        id: questionId,
-        text: questionText,
-        answers
-      });
-    }
-  });
-
-  $.ajax({
-    url: `/api/lab/head/${testId}`,
-    type: "PUT",
-    data: JSON.stringify(payload),
-    contentType: "application/json",
-    success: function () {
-      $("#editTestModal").fadeOut(200);
-      // обновить таблицу или уведомление
-      location.reload();
-    },
-    error: function (err) {
-      console.error(err);
-      alert("Ошибка при сохранении");
-    }
-  });
-});
-function renderQuestions(questions) {
-  $("#edit-question-container").empty();
-  questions.forEach((question, index) => {
-    $("#edit-question-container").append(createQuestionBlock(question, index));
-  });
-}
-
-function createQuestionBlock(question = null, index = 0) {
-  const qId = question?.id || '';
-  const qText = question?.text || '';
-  const block = $(`
-    <div class="question-block" data-id="${qId}">
-      <label>Вопрос ${index + 1}</label>
-      <input type="text" class="question-text" placeholder="Введите текст вопроса" value="${qText}">
-      <div class="answers-container"></div>
-      <div class="question-actions">
-        <button type="button" class="add-answer-btn">+ Ответ</button>
-        <button type="button" class="remove-question">Удалить вопрос</button>
-      </div>
-    </div>
-  `);
-
-  const container = block.find(".answers-container");
-  if (question?.answers?.length) {
-    question.answers.forEach((ans) => {
-      container.append(createAnswerItem(ans));
-    });
-  } else {
-    container.append(createAnswerItem()); // хотя бы 1
-  }
-
-  return block;
-}
-
-function createAnswerItem(answer = null) {
-  const aId = answer?.id || '';
-  const aText = answer?.text || '';
-  const isCorrect = answer?.isCorrect || false;
-
-  const item = $(`
-    <div class="answer-item" data-id="${aId}">
-      <input type="text" class="answer-text" placeholder="Ответ" value="${aText}">
-      <button type="button" class="mark-correct ${isCorrect ? 'selected' : ''}" title="Правильный ответ">
-        <i class="fa fa-check"></i>
-      </button>
-      <button type="button" class="remove-answer" title="Удалить ответ">
-        <i class="fa fa-trash"></i>
-      </button>
-    </div>
-  `);
-  return item;
-}
-
 
     let formMode = 'add'; // 'add' | 'edit'
     let currentEntityType = null; // 'lecture' | 'user'
@@ -315,9 +160,10 @@ function createAnswerItem(answer = null) {
     formMode = entityData ? 'edit' : 'add';
     currentEntityType = entityType;
     currentEditId = entityData?.id || null;
-    console.log(entityData, 'data')
+    
+//______________________________________________________________редактирование и добавление user || lecture______________________________________________________________-->
+  
     $('#form-fields').empty();
-
     if (entityType === 'lecture') {
         $('#form-modal-title').text(formMode === 'edit' ? 'Редактировать лекцию' : 'Добавить лекцию');
         $('#form-fields').append(`
@@ -361,7 +207,7 @@ function createAnswerItem(answer = null) {
       currentEditId = null;
     });
 
-    // Сохранение формы (добавление или редактирование)
+    // Сохранение формы (добавление или редактирование user || lecture)
     $('#entity-form').on('submit', function (e) {
       console.log(currentEntityType,  formMode, 1)
       e.preventDefault();
@@ -375,8 +221,6 @@ function createAnswerItem(answer = null) {
         url = formMode === 'edit' ? `/api/lections/${currentEditId}` : '/api/lections/';
       } else if (currentEntityType === 'user') {
         url = formMode === 'edit' ? `/api/users/${currentEditId}` : '/api/users/';
-      }else if (currentEntityType === 'test') {
-        url = formMode === 'edit' ? `/api/lab/head${currentEditId}` : '/api/lab/head';
       }
 
       $.ajax({
@@ -398,16 +242,11 @@ function createAnswerItem(answer = null) {
     function editLecture(id) {
       $.get(`/api/lections/${id}`, data => openFormModal('lecture', data));
     }
-    function editTest(id) {
-      $.get(`/api/lab/OneHead/${id}`, data => openFormModal('test', data));
-    }
     function editUser(id) {
      $.get(`/api/users/${id}`, data => openFormModal('user', data));
     }
-
-
-
-    // Подтверждение и удаление сущностей
+//______________________________________________________________удаление user || lecture || test______________________________________________________________-->
+    
     let itemToDelete = { id: null, type: null };
 
     function confirmDelete(id, type) {
@@ -450,20 +289,17 @@ function createAnswerItem(answer = null) {
     });
 
 
-
+//______________________________________________________________статистика______________________________________________________________-->
 function loadStats() {
-  // Загрузка детальной таблицы статистики
   $.get('/api/lab/user-stats', res => {
     const { tests, users, data } = res;
-
-    // Заголовок таблицы
+    
     let headerHtml = '<th>Пользователь</th>';
     tests.forEach(test => {
       headerHtml += `<th>${test}</th>`;
     });
-    $('#stats-header').html(headerHtml);
 
-    // Тело таблицы
+    $('#stats-header').html(headerHtml);
     let bodyHtml = '';
     users.forEach(user => {
       let row = `<tr><td>${user}</td>`;
@@ -477,17 +313,15 @@ function loadStats() {
     $('#stats-body').html(bodyHtml);
   });
 }
-
-    // Загрузка пользователей
-    function loadUsers() {
-      const tbody = $('#user-table tbody').empty();
-      $.get('/api/users', data => {
-        if (!Array.isArray(data) || data.length === 0) {
-          tbody.append('<tr><td colspan="8">Нет пользователей.</td></tr>');
-          return;
-        }
-        data.forEach(user => {
-          const row = `
+//______________________________________________________________пользователи______________________________________________________________-->
+function loadUsers() {
+    const tbody = $('#user-table tbody').empty();
+    $.get('/api/users', data => {
+      if (!Array.isArray(data) || data.length === 0) {
+        tbody.append('<tr><td colspan="8">Нет пользователей.</td></tr>');
+        return; }
+         data.forEach(user => {
+           const row = `
             <tr>
               <td>${user.id}</td>
               <td>${user.surname} ${user.name}</td>
@@ -511,9 +345,9 @@ function loadStats() {
       });
     }
 
-    // Загрузка лекций
+//______________________________________________________________лекции______________________________________________________________
     function loadLectures() {
-      const tbody = $('#lecture-table tbody').empty();
+    const tbody = $('#lecture-table tbody').empty();
       $.get('/api/lections', data => {
         if (!Array.isArray(data) || data.length === 0) {
           tbody.append('<tr><td colspan="5">Нет доступных лекций.</td></tr>');
@@ -540,11 +374,8 @@ function loadStats() {
         });
       });
     }
-
-
    
-
-    // Загрузка тестов
+//______________________________________________________________тесты______________________________________________________________
     function loadTests() {
       $('#add-test-btn').html("Добавить тест")
       const tbody = $('#test-table tbody').empty();
@@ -575,15 +406,11 @@ function loadStats() {
         });
       });
     }
-
-    // Обработка выхода
+// ______________________________________________________________выход______________________________________________________________
     function handleLogout() {
       window.location.href = '/logout';
     }
-
-    // Обработчики событий при загрузке страницы
     $(document).ready(() => {
-      // Переключение между секциями
       $('.nav-btn').on('click', function () {
         const target = $(this).data('section');
         $('.nav-btn').removeClass('active');
@@ -593,7 +420,8 @@ function loadStats() {
 
         if (target === 'lectures-section') loadLectures();
         else if (target === 'tests-section') loadTests();
-        else if (target === 'stats-section') { loadStats();
+        else if (target === 'stats-section') loadStats();
+        else if (target == "abody") {loadLabBody();
         } else loadUsers();
       });
 
@@ -605,8 +433,9 @@ function loadStats() {
       loadUsers();
     });
 
+// ______________________________________________________________вопросы______________________________________________________________
     function loadLabBody(head_id){
-      $('#abody').attr("style","active");
+      $('#abody').addClass("active");
       
       $('#add-test-btn').html("Добавить вопрос")
           const tbody = $('#test-table tbody').empty();
@@ -643,4 +472,3 @@ function loadStats() {
     
   </script>
 </body>
-
