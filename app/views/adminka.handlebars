@@ -469,12 +469,11 @@ function loadUsers() {
       tbody.append('<tr><td colspan="3">Ответы не найдены.</td></tr>');
       return;
     }
-
     data.forEach(LabAnswer => {
       const row = `
         <tr>
           <td>${LabAnswer.id}</td>
-          <td>${LabAnswer.text}</td>
+          <td>${LabAnswer.check}</td>
           <td class="action-buttons">
             <button class="icon-button edit" onclick="editLabAnswer(${LabAnswer.id})" title="Редактировать">
               <i class="fas fa-edit"></i>
@@ -489,48 +488,6 @@ function loadUsers() {
     });
   });
 }
-
-
- /* function loadLabBody(head_id) {
-  //$('#abody').addClass("active"); // возможно, больше не нужен класс 'active', можно удалить
-  $('#abody').addClass("active");
-  $('#add-question-btn').text("Добавить вопрос");
-
-  $('#add-test-btn').html("Добавить вопрос")
-        //  tbody.attr("head_id",head_id)
-
-  const tbody = $('#body-table tbody').empty(); // меняем с '#test-table' на '#body-table'
-  tbody.attr("data-head-id", head_id); // используем data-атрибут вместо собственного атрибута (лучше практика)
-
-  $.get('/api/lab/allBody?head_id=' + head_id, data => {
-    if (!Array.isArray(data) || data.length === 0) {
-      tbody.append('<tr><td colspan="3">Вопросы не найдены.</td></tr>');
-      return;
-    }
-
-    data.forEach(labBody => {
-      const row = `
-        <tr>
-          <td>${labBody.id}</td>
-          <td>${labBody.title}</td>
-          <td class="action-buttons">
-            <button class="icon-button edit" onclick="editLabBody(${labBody.id})" title="Редактировать">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="icon-button delete" onclick="confirmDelete(${labBody.id}, 'test')" title="Удалить">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-            <button class="icon-button answers" onclick="loadLabAnswers(${labBody.id})" title="Ответы">
-              <i class="fas fa-answers"></i>
-            </button>
-          </td>
-        </tr>
-      `;
-      tbody.append(row);
-    });
-  });
-}*/
-
     
   </script>
 </body>

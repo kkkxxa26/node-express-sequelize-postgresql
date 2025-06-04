@@ -12,6 +12,7 @@ module.exports = (sequelize, Sequelize) => {
 
 LabAnswer.associate = function(db){
     LabAnswer.belongsTo(db.users,{foreignKey:'lab_body_Id'});
+    //LabAnswer.belongsTo(db.labBody,{foreignKey:'lab_body_Id'});
 }
      return LabAnswer;
 }
