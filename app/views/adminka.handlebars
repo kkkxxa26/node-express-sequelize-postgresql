@@ -22,8 +22,8 @@
     <button class="nav-btn active" data-section="users-section">Пользователи</button>
     <button class="nav-btn" data-section="lectures-section">Лекции</button>
     <button class="nav-btn" data-section="tests-section">Тесты</button>
-    <button class="nav-btn" id="abody" data-section="body-section">Вопросы</button>
-    <button class="nav-btn" id="aans" data-section="ans-section">Ответы</button>
+    <button id="abody" data-section="body-section">Вопросы</button>
+    <button id="aans" data-section="ans-section">Ответы</button>
     <button class="nav-btn" data-section="stats-section">Статистика</button>
   </div>
 
@@ -404,9 +404,7 @@ function loadUsers() {
 
         if (target === 'lectures-section') loadLectures();
         else if (target === 'tests-section') loadTests();
-        else if (target === 'stats-section') loadStats();
-        else if (target == "aans") loadLabAnswers();
-        else if (target == "abody") {loadLabBody();
+        else if (target === 'stats-section') {loadStats();
         } else loadUsers();
       });
 
@@ -457,7 +455,7 @@ function loadUsers() {
     }
 //______________________________________________________________ответы______________________________________________________________
     function loadLabAnswers(body_id) {
- // $('#abody').removeClass("active");
+  $('#abody').removeClass("active");
   $('#aans').addClass("active");
 
   $('#add-test-btn').html("Добавить ответ");
