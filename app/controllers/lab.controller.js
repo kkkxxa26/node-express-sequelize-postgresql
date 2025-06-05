@@ -260,6 +260,25 @@ exports.findAllBody = (req, res) => {
     });
 };
 
+exports.findOneBody = (req, res) => {
+  const id = req.params.id;
+
+  LabBody.findByPk(id)
+    .then(data => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({ message: `Вопрос с ID=${id} не найден.` });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || `Ошибка при получении вопроса с ID=${id}.`
+      });
+    });
+};
+
+
 exports.updateBody = (req, res) => { 
   const id = req.params.id; 
 
@@ -270,12 +289,12 @@ exports.updateBody = (req, res) => {
       if (num == 1) { 
         res.send({ message: "успешно обновлена" });
       } else { 
-        res.status(404).send({ message: `Не удалось обновить лекцию с ID=${id}` });
+        res.status(404).send({ message: `Не удалось обновить вопрос с ID=${id}` });
       }
     })
     .catch(err => {  
       res.status(500).send({
-        message: `Ошибка при обновлении лекции с ID=${id}` 
+        message: `Ошибка при обновлении вопроса с ID=${id}` 
       });
     });
 };

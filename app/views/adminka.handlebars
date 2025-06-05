@@ -147,20 +147,55 @@
 <!-- Модалка добавления ответа -->
 <div id="add-answer-modal" class="modal-overlay" style="display: none;">
   <div class="modal-window">
-    <div class="modal-content">
+    <div class="form-fields" style="margin-bottom: 16px;">
       <h3>Добавить ответ</h3>
       <input id="new-answer-title" type="text" placeholder="Текст ответа">
       <select id="new-answer-correct">
         <option value="false">Неправильный</option>
         <option value="true">Правильный</option>
       </select>
-      <div class="modal-btns">
+    </div>
+
+      <div class="modal-actions">
         <button onclick="submitNewAnswer()">Сохранить</button>
         <button onclick="closeAddAnswerModal()">Отмена</button>
+      </div>
+  </div>
+</div>
+
+<!-- Модальное окно для добавление вопроса -->
+<div id="add-body-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-window">
+    <div class="modal-content">
+      <h2>Добавить вопрос</h2>
+      <input type="text" id="new-body-title" style="width: 568px; margin-bottom: 16px;" placeholder="Введите текст вопроса" />
+      
+      <div class="modal-actions">
+        <button class="modal-btn" style="background-color: #28a745;" onclick="submitNewBody()">Сохранить</button>
+        <button class="modal-btn" onclick="closeAddBodyModal()">Отмена</button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Модальное окно для редактирования вопроса -->
+<div class="modal-overlay" id="edit-body-modal" style="display: none;">
+  <div class="modal-window">
+    <div class="modal-content">
+      <h2>Редактировать вопрос</h2>
+      <div style="align-items: baseline;">
+        <label  for="edit-body-title" style="display: inline; margin-right: 488px; "> Текст вопроса: </label>
+        <input  id="edit-body-title" type="text" style="width: 600px; justify-content: center; margin-top: 5px;" placeholder="Введите вопрос" />
+     </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" style="background-color: #28a745;" onclick="submitEditBody()">Сохранить</button>
+      <button class="modal-btn cancel" onclick="closeEditBodyModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+
 
 
 
@@ -459,44 +494,134 @@ function loadUsers() {
       });
     }
 // ______________________________________________________________вопросы______________________________________________________________
-  
-   function loadLabBody(head_id){
-      $('#ahead, #abody, #aans').removeClass("active");
-      $('#abody').addClass("active");
-      
-      $('#add-test-btn').html("Добавить вопрос")
-          const tbody = $('#test-table tbody').empty();
-          tbody.attr("head_id",head_id)
+function loadLabBody(head_id) {
+  // Активная вкладка — "Вопросы"
+  $('#ahead, #abody, #aans').removeClass("active");
+  $('#abody').addClass("active");
 
-      $.get('/api/lab/allBody?head_id='+head_id, data => {
-        if (!Array.isArray(data) || data.length === 0) {
-          tbody.append('<tr><td colspan="3">Вопросы не найдены.</td></tr>');
-          return;
-        }
-        data.forEach(labBody => {
-          const row = `
-            <tr>
-              <td>${labBody.id}</td>
-              <td>${labBody.title}</td>
-              <td class="action-buttons">
-                <button class="icon-button edit" onclick="editLabBody(${labBody.id})" title="Редактировать">
-                  <i class="fas fa-edit"></i>
-                </button>
-                
-                <button class="icon-button delete" onclick="confirmDeleteTAQ(${labBody.id}, 'question')" title="Удалить">
-                  <i class="fas fa-trash-alt"></i>
-                </button>
+  // Кнопка добавления вопроса
+  $('#add-test-btn').html("Добавить вопрос").off("click").on("click", showAddBodyModal);
 
-                <button class="icon-button check" onclick="loadLabAnswers(${labBody.id})" title="Ответы">
-                  <i class="fas fa-check"></i>
-                </button> 
-              </td>
-            </tr>
-          `;
-          tbody.append(row);
-        });
-      });
+  // Таблица и её очистка
+  const tbody = $('#test-table tbody').empty();
+  tbody.attr("head_id", head_id); // сохраняем ID в DOM
+
+  // Загружаем вопросы по head_id
+  $.get('/api/lab/allBody?head_id=' + head_id, data => {
+    if (!Array.isArray(data) || data.length === 0) {
+      tbody.append('<tr><td colspan="3">Вопросы не найдены.</td></tr>');
+      return;
     }
+
+    // Формируем строки таблицы
+    data.forEach(labBody => {
+      const row = `
+        <tr>
+          <td>${labBody.id}</td>
+          <td>${labBody.title}</td>
+          <td class="action-buttons">
+            <button class="icon-button edit" onclick="editLabBody(${labBody.id})" title="Редактировать">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="icon-button delete" onclick="confirmDeleteTAQ(${labBody.id}, 'question')" title="Удалить">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+            <button class="icon-button check" onclick="loadLabAnswers(${labBody.id})" title="Ответы">
+              <i class="fas fa-check"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+      tbody.append(row);
+    });
+  });
+}
+
+
+function showAddBodyModal() {
+  const head_id = $('#test-table tbody').attr('head_id');
+  if (!head_id) {
+    alert("Ошибка: не выбран блок вопросов.");
+    return;
+  }
+  $('#add-body-modal').fadeIn();
+  $('#add-body-modal').data('head-id', head_id);
+}
+
+function closeAddBodyModal() {
+  $('#add-body-modal').fadeOut();
+  $('#new-body-title').val('');
+}
+
+function submitNewBody() {
+  const title = $('#new-body-title').val().trim();
+  const head_id = $('#add-body-modal').data('head-id');
+
+  if (!title) {
+    alert("Введите текст вопроса.");
+    return;
+  }
+
+  $.ajax({
+    url: '/api/lab/OneBody',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      title: title,
+      head_id: head_id
+    }),
+    success: () => {
+     // alert("Вопрос добавлен.");
+      closeAddBodyModal();
+      loadLabBody(head_id); 
+    },
+    error: () => {
+      alert("Ошибка при добавлении вопроса.");
+    }
+  });
+}
+
+function editLabBody(body_id) {
+  $.get('/api/lab/OneBody/' + body_id, data => {
+    $('#edit-body-modal').fadeIn();
+    $('#edit-body-modal').data('body-id', body_id);
+    $('#edit-body-title').val(data.title);
+  }).fail(() => {
+    alert("Ошибка загрузки вопроса.");
+  });
+}
+
+function closeEditBodyModal() {
+  $('#edit-body-modal').fadeOut();
+  $('#edit-body-title').val('');
+}
+
+function submitEditBody() {
+  const body_id = $('#edit-body-modal').data('body-id');
+  const newTitle = $('#edit-body-title').val().trim();
+
+  if (!newTitle) {
+    alert("Введите текст вопроса.");
+    return;
+  }
+
+  $.ajax({
+    url: '/api/lab/body/' + body_id,
+    method: 'PUT',
+    contentType: 'application/json',
+    data: JSON.stringify({ title: newTitle }),
+    success: () => {
+      closeEditBodyModal();
+      const head_id = $('#test-table tbody').attr('head_id');
+      loadLabBody(head_id);
+    },
+    error: () => {
+      alert("Ошибка при обновлении вопроса.");
+    }
+  });
+}
+
+
 //______________________________________________________________ответы______________________________________________________________
   
   
@@ -562,7 +687,7 @@ function saveAnswerCheck(answer_id) {
     contentType: 'application/json',
     data: JSON.stringify({ id: answer_id, check: value }),
     success: () => {
-      alert('Ответ обновлён');
+     alert('Ответ обновлён');
     },
     error: () => {
       alert('Ошибка при сохранении правильности ответа.');
@@ -570,33 +695,50 @@ function saveAnswerCheck(answer_id) {
   });
 }
 
-function addLabAnswer() {
-  const body_id = $('#test-table tbody').attr('body_id');
-  const answerTitle = $('#new-answer-title').val().trim();
+//______________________________________________________________ добавление ответов ______________________________________________________________-->
+
+
+function showAddAnswerModal(body_id) {
+  $('#add-answer-modal').fadeIn();
+  $('#add-answer-modal').data('body-id', body_id);
+}
+
+function closeAddAnswerModal() {
+  $('#add-answer-modal').fadeOut();
+  $('#new-answer-title').val('');
+  $('#new-answer-correct').val('false');
+}
+
+function submitNewAnswer() {
+  const body_id = $('#add-answer-modal').data('body-id');
+  const title = $('#new-answer-title').val().trim();
   const isCorrect = $('#new-answer-correct').val() === 'true';
 
-  if (!answerTitle) {
-    alert('Введите текст ответа.');
+  if (!title || !body_id) {
+    alert('Введите текст ответа и убедитесь, что выбран вопрос.');
     return;
   }
+
+  console.log('body_id:', body_id);
+  console.log('title:', title);
+  console.log('check:', isCorrect);
 
   $.ajax({
     url: '/api/lab/answer',
     method: 'POST',
     contentType: 'application/json',
-    data: JSON.stringify({
-      title: answerTitle,
+    data: JSON.stringify({ 
+      title,
       check: isCorrect,
-      body_id: body_id
-    }),
-    success: () => {
-      alert('Ответ добавлен');
-      $('#new-answer-title').val('');
-      $('#new-answer-correct').val('false');
-      loadLabAnswers(body_id); // перезагрузить список
+      lab_body_id: body_id 
+      }), success: () => {
+     // alert('Ответ добавлен');
+      closeAddAnswerModal();
+      loadLabAnswers(body_id);
     },
-    error: () => {
-      alert('Ошибка при добавлении ответа.');
+    error: (xhr) => {
+      console.error(xhr.responseText);
+      alert('Ошибка при добавлении: ' + xhr.responseText);
     }
   });
 }
@@ -631,7 +773,7 @@ $('#confirm-taq-yes').on('click', () => {
     url: url,
     method: 'DELETE',
     success: () => {
-      alert("Удалено успешно");
+     // alert("Удалено успешно");
       $('#confirmDeleteTAQ').fadeOut();
 
       if (type === 'answer') {
@@ -659,43 +801,6 @@ $('#confirm-taq-no').on('click', () => {
   $('#confirmDeleteTAQ').fadeOut(); // закрыть модалку
 });
 
-
-function showAddAnswerModal(body_id) {
-  $('#add-answer-modal').fadeIn();
-  $('#add-answer-modal').data('body-id', body_id);
-}
-
-function closeAddAnswerModal() {
-  $('#add-answer-modal').fadeOut();
-  $('#new-answer-title').val('');
-  $('#new-answer-correct').val('false');
-}
-
-function submitNewAnswer() {
-  const body_id = $('#add-answer-modal').data('body-id');
-  const title = $('#new-answer-title').val().trim();
-  const isCorrect = $('#new-answer-correct').val() === 'true';
-
-  if (!title) {
-    alert('Введите текст ответа.');
-    return;
-  }
-
-  $.ajax({
-    url: '/api/lab/answer',
-    method: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({ title, check: isCorrect, body_id }),
-    success: () => {
-      alert('Ответ добавлен');
-      closeAddAnswerModal();
-      loadLabAnswers(body_id);
-    },
-    error: () => {
-      alert('Ошибка при добавлении.');
-    }
-  });
-}
 
     
   </script>

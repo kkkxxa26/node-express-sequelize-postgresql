@@ -5,7 +5,8 @@ module.exports = app => {
   // Получение данных
   router.get("/allHead", lab.findAllHead);           
   router.get("/oneHead/:id", lab.findOneHead);       
-  router.get("/allBody", lab.findAllBody);           
+  router.get("/allBody", lab.findAllBody);  
+  router.get("/OneBody/:id", lab.findOneBody);           
   router.get("/allAnswer", lab.findAllAnswer);       
   router.get("/user-stats", lab.getUserAnswersStats);
 
