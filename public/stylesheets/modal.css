@@ -1,4 +1,3 @@
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -12,30 +11,29 @@
   z-index: 1000;
 }
 
-/* Основное окно */
 .modal-window {
   background-color: #fff;
-  padding: 0; /* убираем внутренние отступы, перенесем их внутрь */
+  padding: 0;
   border-radius: 12px;
   max-width: 650px;
   width: 100%;
-  max-height: 90vh; /* адаптивная высота под окно браузера */
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-in-out;
   text-align: center;
-  overflow: hidden; /* скрываем общий скролл */
+  overflow: hidden;
+  z-index: 1001; /* выше, чем overlay */
 }
 
 .modal-content {
   padding: 2px 16px 16px 16px;
   overflow-y: auto;
-  flex-grow: 1; /* занимает всё доступное пространство */
+  flex-grow: 1;
+ 
 }
 
-
-/* Заголовок */
 .modal-window h3 {
   margin-top: 16px;
   font-size: 20px;
@@ -44,14 +42,12 @@
   text-align: center;
 }
 
-/* Поля формы */
 #form-fields label {
   display: grid;
   justify-content: left;
   margin-bottom: 6px;
   font-weight: 600;
   color: #444;
-  
 }
 
 #form-fields input[type="text"],
@@ -72,11 +68,9 @@
   outline: none;
 }
 
-/* Кнопки */
 .modal-actions {
   padding: 15px 25px;
   border-top: 1px solid #eee;
-  /* background-color: #fafafa;*/
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -119,57 +113,140 @@
 .modal-btn:not(.primary):not(.danger):hover {
   background-color: #c7c7c7;
 }
+
+.modal-btn:disabled,
+#add-test-btn:disabled,
+#add-question-btn:disabled,
+#add-answer-btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .full-width-btn {
-    width: 100%;
-    margin-top: 12px;
-    padding: 10px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
 }
 
 .question-block {
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    padding: 12px;
-    border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 6px;
 }
 
 .answer-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
 }
-/* Чекбокс посередине (по высоте) */
+
 .answer-item input[type="checkbox"] {
-  order: 2; /* справа */
+  order: 2;
 }
 
 .answer-text {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .mark-correct.selected i {
-    color: green;
+  color: green;
 }
 
 .question-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.mark-correct, .remove-answer, .done-btn, .add-answer-btn {
-    background: #eee;
-    border: none;
-    padding: 6px 10px;
-    cursor: pointer;
-    border-radius: 4px;
+.mark-correct,
+.remove-answer,
+.done-btn,
+.add-answer-btn {
+  background: #eee;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.mark-correct i, .remove-answer i {
-    pointer-events: none;
+.mark-correct i,
+.remove-answer i {
+  pointer-events: none;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-/* Анимация */
+.mark-correct:hover i,
+.remove-answer:hover i {
+  transform: scale(1.1);
+}
+
+.modal-btn-group {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+#confirm-taq-yes {
+  background-color: #28a745;
+  color: white;
+}
+#confirm-taq-yes:hover {
+  background-color: #218838;
+}
+
+#confirm-taq-no {
+  background-color: #dc3545;
+  color: white;
+}
+#confirm-taq-no:hover {
+  background-color: #c82333;
+}
+
+#add-test-btn,
+#add-question-btn,
+#add-answer-btn {
+  display: inline-block;
+  margin: 10px 10px 20px 0;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#add-test-btn:hover,
+#add-question-btn:hover,
+#add-answer-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+#add-test-btn:active,
+#add-question-btn:active,
+#add-answer-btn:active {
+  transform: translateY(0);
+  background-color: #004a99;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -178,5 +255,23 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 600px) {
+  .modal-window {
+    max-width: 95%;
+    padding: 0;
+    border-radius: 8px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modal-btn {
+    width: 100%;
   }
 }

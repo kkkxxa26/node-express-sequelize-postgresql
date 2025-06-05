@@ -85,6 +85,9 @@
       </table>
         <div class="table-footer">
           <button id="add-test-btn" class="floating-add-btn">Добавить тест</button>
+           <!-- Кнопки -->
+          <button id="add-answer-btn" style="display: none;">Добавить ответ</button>
+          <button id="add-question-btn" style="display: none;">Добавить вопрос</button>
         </div>
     </div>
 
@@ -117,7 +120,7 @@
       </div>
     </div>
 
-    <!-- Модальное окно подтверждения удаления -->
+    <!-- Модальное окно подтверждения удаления lecture/user-->
     <div id="confirm-modal" class="modal-overlay" style="display: none;">
       <div class="modal-window">
         <p id="confirm-message" style="margin-top: 16px ; margin-bottom: 16px">Вы уверены, что хотите удалить?</p>
@@ -127,6 +130,40 @@
         </div>
       </div>
     </div>
+    
+    <!-- Модальное окно подтверждения удаления twst/question/answer-->
+    <div id="confirmDeleteTAQ" class="modal-overlay" style="display: none;">
+      <div class="modal-window">
+        <div class="modal-content">
+          <p style="margin-top: 16px ; margin-bottom: 16px" >Вы уверены, что хотите удалить этот элемент?</p>
+          <div class="modal-btn-group">
+            <button id="confirm-taq-yes" class="modal-btn">Да</button>
+            <button id="confirm-taq-no" class="modal-btn">Нет</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- Модалка добавления ответа -->
+<div id="add-answer-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-window">
+    <div class="modal-content">
+      <h3>Добавить ответ</h3>
+      <input id="new-answer-title" type="text" placeholder="Текст ответа">
+      <select id="new-answer-correct">
+        <option value="false">Неправильный</option>
+        <option value="true">Правильный</option>
+      </select>
+      <div class="modal-btns">
+        <button onclick="submitNewAnswer()">Сохранить</button>
+        <button onclick="closeAddAnswerModal()">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
   <!-- ______________________________________________________________ JS логика ______________________________________________________________-->
   <script>
@@ -201,6 +238,8 @@
         url = formMode === 'edit' ? `/api/lections/${currentEditId}` : '/api/lections/';
       } else if (currentEntityType === 'user') {
         url = formMode === 'edit' ? `/api/users/${currentEditId}` : '/api/users/';
+      } else if (currentEntityType === 'answer') {
+        url = formMode === 'edit' ? `/api/answer/${currentEditId}` : '/api/answer/';
       }
 
       $.ajax({
@@ -213,6 +252,7 @@
           currentEditId = null;
           if (currentEntityType === 'lecture') loadLectures();
           else if (currentEntityType === 'user') loadUsers();
+          else if (currentEntityType === 'answer') loadLabAnswers();
         },
         error: () => alert("Ошибка при сохранении.")
       });
@@ -355,8 +395,36 @@ function loadUsers() {
       });
     }
    
+// ______________________________________________________________выход______________________________________________________________
+    function handleLogout() {
+      window.location.href = '/logout';
+    }
+    $(document).ready(() => {
+      $('.nav-btn').on('click', function () {
+        const target = $(this).data('section');
+        $('.nav-btn').removeClass('active');
+        $(this).addClass('active');
+        $('.section').hide();
+        $('#' + target).show();
+
+        if (target === 'lectures-section') loadLectures();
+        else if (target === 'tests-section') loadTests();
+        else if (target === 'stats-section') {loadStats();
+        } else loadUsers();
+      });
+
+      // Кнопки добавления
+      $('#add-lecture-btn').on('click', () => openFormModal('lecture'));
+      $('#add-test-btn').on('click', () => openFormModal('test'));
+
+      // Первая загрузка пользователей
+      loadUsers();
+    });
+
 //______________________________________________________________тесты______________________________________________________________
     function loadTests() {
+      $('#ahead, #abody, #aans').removeClass("active");
+
       $('#add-test-btn').html("Добавить тест")
       const tbody = $('#test-table tbody').empty();
       $.get('/api/lab/allHead', data => {
@@ -390,34 +458,10 @@ function loadUsers() {
         });
       });
     }
-// ______________________________________________________________выход______________________________________________________________
-    function handleLogout() {
-      window.location.href = '/logout';
-    }
-    $(document).ready(() => {
-      $('.nav-btn').on('click', function () {
-        const target = $(this).data('section');
-        $('.nav-btn').removeClass('active');
-        $(this).addClass('active');
-        $('.section').hide();
-        $('#' + target).show();
-
-        if (target === 'lectures-section') loadLectures();
-        else if (target === 'tests-section') loadTests();
-        else if (target === 'stats-section') {loadStats();
-        } else loadUsers();
-      });
-
-      // Кнопки добавления
-      $('#add-lecture-btn').on('click', () => openFormModal('lecture'));
-      $('#add-test-btn').on('click', () => openFormModal('test'));
-
-      // Первая загрузка пользователей
-      loadUsers();
-    });
-
 // ______________________________________________________________вопросы______________________________________________________________
+  
    function loadLabBody(head_id){
+      $('#ahead, #abody, #aans').removeClass("active");
       $('#abody').addClass("active");
       
       $('#add-test-btn').html("Добавить вопрос")
@@ -439,10 +483,10 @@ function loadUsers() {
                   <i class="fas fa-edit"></i>
                 </button>
                 
-                <button class="icon-button delete" onclick="confirmDelete(${labBody.id}, 'test')" title="Удалить">
+                <button class="icon-button delete" onclick="confirmDeleteTAQ(${labBody.id}, 'question')" title="Удалить">
                   <i class="fas fa-trash-alt"></i>
                 </button>
-                
+
                 <button class="icon-button check" onclick="loadLabAnswers(${labBody.id})" title="Ответы">
                   <i class="fas fa-check"></i>
                 </button> 
@@ -454,11 +498,23 @@ function loadUsers() {
       });
     }
 //______________________________________________________________ответы______________________________________________________________
-    function loadLabAnswers(body_id) {
-  $('#abody').removeClass("active");
-  $('#aans').addClass("active");
+  
+  
+  function loadLabAnswers(body_id) {
 
-  $('#add-test-btn').html("Добавить ответ");
+  $('#ahead, #abody, #aans').removeClass("active");
+  $('#aans').addClass("active");
+  
+  // Скрыть все кнопки
+  $('#add-test-btn, #add-question-btn, #add-answer-btn').hide();
+
+  // Показать только кнопку добавления ответа
+  $('#add-answer-btn')
+    .show()
+    .off('click')
+    .on('click', () => showAddAnswerModal(body_id)); // вызвать модалку
+    
+  
   const tbody = $('#test-table tbody').empty();
   tbody.attr("body_id", body_id);
 
@@ -471,12 +527,19 @@ function loadUsers() {
       const row = `
         <tr>
           <td>${LabAnswer.id}</td>
-          <td>${LabAnswer.check}</td>
+          <td>${LabAnswer.title}</td>
+          
           <td class="action-buttons">
-            <button class="icon-button edit" onclick="editLabAnswer(${LabAnswer.id})" title="Редактировать">
-              <i class="fas fa-edit"></i>
+            <select name="check" data-id="${LabAnswer.id}" class="check-select">
+              <option value="true" ${LabAnswer.check === true ? 'selected' : ''}>Правильный ответ</option>
+              <option value="false" ${LabAnswer.check === false ? 'selected' : ''}>Неправильный ответ</option>
+            </select>
+
+            <button class="icon-button save" onclick="saveAnswerCheck(${LabAnswer.id})" title="Сохранить">
+              <i class="fas fa-check"></i>
             </button>
-            <button class="icon-button delete" onclick="confirmDelete(${LabAnswer.id}, 'answer')" title="Удалить">
+
+            <button class="icon-button delete" onclick="confirmDeleteTAQ(${LabAnswer.id}, 'answer')" title="Удалить">
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
@@ -486,6 +549,154 @@ function loadUsers() {
     });
   });
 }
+
+//______________________________________________________________редактирование ответов через селект______________________________________________________________
+
+function saveAnswerCheck(answer_id) {
+  const select = $(`select.check-select[data-id="${answer_id}"]`);
+  const value = select.val() === 'true'; // преобразование в boolean
+
+  $.ajax({
+    url: `/api/lab/answer/${answer_id}`,
+    method: 'PUT',
+    contentType: 'application/json',
+    data: JSON.stringify({ id: answer_id, check: value }),
+    success: () => {
+      alert('Ответ обновлён');
+    },
+    error: () => {
+      alert('Ошибка при сохранении правильности ответа.');
+    }
+  });
+}
+
+function addLabAnswer() {
+  const body_id = $('#test-table tbody').attr('body_id');
+  const answerTitle = $('#new-answer-title').val().trim();
+  const isCorrect = $('#new-answer-correct').val() === 'true';
+
+  if (!answerTitle) {
+    alert('Введите текст ответа.');
+    return;
+  }
+
+  $.ajax({
+    url: '/api/lab/answer',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      title: answerTitle,
+      check: isCorrect,
+      body_id: body_id
+    }),
+    success: () => {
+      alert('Ответ добавлен');
+      $('#new-answer-title').val('');
+      $('#new-answer-correct').val('false');
+      loadLabAnswers(body_id); // перезагрузить список
+    },
+    error: () => {
+      alert('Ошибка при добавлении ответа.');
+    }
+  });
+}
+
+
+//______________________________________________________________удаление tate || question || answer ______________________________________________________________-->
+
+let itemToDeleteTAQ = { id: null, type: null };
+function confirmDeleteTAQ(id, type) {
+  itemToDeleteTAQ = { id, type };
+  $('#confirmDeleteTAQ').fadeIn(); // показать модалку
+}
+
+$('#confirm-taq-yes').on('click', () => {
+  const { id, type } = itemToDeleteTAQ;
+  if (!id || !type) return;
+
+  let url;
+  if (type === 'answer') {
+    url = `/api/lab/answer/${id}`;
+  } else if (type === 'question') {
+    url = `/api/lab/body/${id}`;
+  } else if (type === 'test') {
+    url = `/api/lab/head/${id}`;
+  } else {
+    alert("Неизвестный тип элемента.");
+    $('#confirmDeleteTAQ').fadeOut();
+    return;
+  }
+
+  $.ajax({
+    url: url,
+    method: 'DELETE',
+    success: () => {
+      alert("Удалено успешно");
+      $('#confirmDeleteTAQ').fadeOut();
+
+      if (type === 'answer') {
+        const body_id = $('#test-table tbody').attr("body_id");
+        loadLabAnswers(body_id);
+      } else if (type === 'question') {
+        const head_id = $('#test-table tbody').attr("head_id");
+        loadLabBody(head_id);
+      } else if (type === 'test') {
+        loadLabHeads();
+      }
+
+      itemToDeleteTAQ = { id: null, type: null };
+    },
+    error: () => {
+      alert("Ошибка при удалении.");
+      $('#confirmDeleteTAQ').fadeOut();
+      itemToDeleteTAQ = { id: null, type: null };
+    }
+  });
+});
+
+$('#confirm-taq-no').on('click', () => {
+  itemToDeleteTAQ = { id: null, type: null };
+  $('#confirmDeleteTAQ').fadeOut(); // закрыть модалку
+});
+
+
+function showAddAnswerModal(body_id) {
+  $('#add-answer-modal').fadeIn();
+  $('#add-answer-modal').data('body-id', body_id);
+}
+
+function closeAddAnswerModal() {
+  $('#add-answer-modal').fadeOut();
+  $('#new-answer-title').val('');
+  $('#new-answer-correct').val('false');
+}
+
+function submitNewAnswer() {
+  const body_id = $('#add-answer-modal').data('body-id');
+  const title = $('#new-answer-title').val().trim();
+  const isCorrect = $('#new-answer-correct').val() === 'true';
+
+  if (!title) {
+    alert('Введите текст ответа.');
+    return;
+  }
+
+  $.ajax({
+    url: '/api/lab/answer',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({ title, check: isCorrect, body_id }),
+    success: () => {
+      alert('Ответ добавлен');
+      closeAddAnswerModal();
+      loadLabAnswers(body_id);
+    },
+    error: () => {
+      alert('Ошибка при добавлении.');
+    }
+  });
+}
+
     
   </script>
 </body>

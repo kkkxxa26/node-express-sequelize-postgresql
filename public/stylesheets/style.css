@@ -566,6 +566,7 @@ footer {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  height: 60px;
 }
 
 .user-table th {
@@ -578,6 +579,7 @@ footer {
   border: 1px solid #ccc;
   padding: 8px 12px;
   text-align: left;
+  height: 60px;
 }
 
 .user-table th {
