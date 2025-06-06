@@ -32,7 +32,19 @@ body {
 /* === ФОРМА РЕГИСТРАЦИИ === */
 input[type="date"],
 select {
-  width: 320px;
+  width: 600px;
+  padding: 12px 14px 12px 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-color: white;
+}
+
+input[type="check"],
+select {
+  width: 600px;
   padding: 12px 14px 12px 40px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -124,7 +136,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="tel"]  {
-  width: 320px;
+  width: 600px;
   padding: 12px 14px 12px 40px;
   border: 1px solid #ccc;
   border-radius: 6px;
