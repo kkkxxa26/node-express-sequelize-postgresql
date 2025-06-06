@@ -1,12 +1,7 @@
 const db = require("../models");
-
-//_______________________________ user _______________________________
-
+// user 
 const Users = db.users;
 const Op = db.Sequelize.Op; 
-
-// user это объект(запись) с информацией об одной лекции 
-// User это модель таблицы которая ее описывает в бд
 
 exports.create = (req, res) => { //"/", users.create 
   // Валидация request
@@ -28,15 +23,14 @@ exports.create = (req, res) => { //"/", users.create
     role: req.body.role
   };    
 
-// Сохраняем в бд
-  Users.create(user) // create в готовой базе создаем строчку 
+  Users.create(user)
     .then(data => {
       res.send(data);
     })
-    .catch(err => {//иначе попадаем в .catch()
-      console.error("Ошибка при создании пользователя:", err); // выводим ошибку в консоль
-      res.status(500).send({//выдаем ответ с кодом 500 и сообщением 
-        message://сообщение которое мы выодим
+    .catch(err => {
+      console.error("Ошибка при создании пользователя:", err); 
+      res.status(500).send({
+        message:
           err.message || "Произошла ошибка при создании пользователя."
       });
     });
@@ -87,14 +81,12 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  // Проверка на наличие данных
   if (!req.body.email || !req.body.name) {
     return res.status(400).send({
       message: "Поля 'email' и 'name' обязательны для заполнения"
     });
   }
 
-  // Подготовка обновляемых данных
   const user = {
     email: req.body.email,
     password: req.body.password,
@@ -106,10 +98,7 @@ exports.update = (req, res) => {
     role: req.body.role
   };
 
-  // Удаляем поля, которые не переданы (чтобы не перезаписывать их как NULL)
   Object.keys(user).forEach(key => user[key] === undefined && delete user[key]);
-
-  // Обновление в БД
   Users.update(user, {
     where: { id: id }
   })

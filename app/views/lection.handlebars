@@ -9,7 +9,7 @@
   <div class="header-right">
     <div class="user-avatar">
        <i class="fas fa-user"></i>
-       <div class="site-header">Кыдыкбаева А.</div>
+       <div class="site-header"> {{user.dataValues.name}} </div>
     </div>
 
     <div class="logout-icon" onclick="handleLogout()" title="Выйти">
@@ -22,11 +22,6 @@
 <div class="onelection-container">
   <div class="lection-container">
     <h1 id="lection-title"><!-- Заголовок --></h1>
-
-    <!-- Изображение -->
-    {{!-- <div class="article-image">
-      <img src="https://habrastorage.org/r/w780/getpro/habr/upload_files/707/14d/217/70714d217db9919ac788fc3a6d79f37f.jpg">
-    </div>  --}}
 
     <div class="article-content" id="lection-content">
       <!-- Основной текст -->
@@ -45,9 +40,7 @@
 
 <script>
   $(document).ready(function () {
-
     const queryParams = new URLSearchParams(window.location.search);
-
     // Получаем конкретный параметр, например id
     const id = queryParams.get('id');
     $.ajax({

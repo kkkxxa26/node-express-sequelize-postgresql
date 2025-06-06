@@ -1,7 +1,5 @@
 const db = require("../models");
-
-//_______________________________ userAnswer _______________________________
-
+//userAnswer 
 const UserAnswer = db.userAnswer;
 const Op = db.Sequelize.Op; 
 
@@ -12,14 +10,12 @@ exports.create = (req, res) => {
     });
     return;
   }
-
   const userAnswer = { 
     lab_body_Id: req.body.lab_body_Id, 
     lab_answers_Id: req.body.lab_answers_Id, 
     user_Id: req.user.id  
 
   };
-
   UserAnswer.create(userAnswer)
     .then(data => {
       res.send(data);

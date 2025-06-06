@@ -175,6 +175,22 @@
   </div>
 </div>
 
+<!-- Модальное окно для добавления теста -->
+<div id="add-test-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-window">
+    <div class="modal-content">
+      <h3>Добавить тест</h3>
+      <label for="new-test-title" style="display: inline; margin-right: 488px;">Название теста:</label>
+      <input id="new-test-title" type="text" style="width: 600px; justify-content: center; margin-top: 5px;" placeholder="Введите название">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" style="background-color: #28a745;" onclick="submitNewTest()">Сохранить</button>
+      <button class="modal-btn" onclick="closeAddTestModal()">Отмена</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- Модальное окно для редактирования вопроса -->
 <div id="edit-body-modal" class="modal-overlay" style="display: none;">
   <div class="modal-window">
@@ -188,21 +204,6 @@
     <div class="modal-actions">
       <button class="modal-btn" style="background-color: #28a745;" onclick="submitEditBody()">Сохранить</button>
       <button class="modal-btn cancel" onclick="closeEditBodyModal()">Отмена</button>
-    </div>
-  </div>
-</div>
-
-<!-- Модальное окно для добавления теста -->
-<div id="add-test-modal" class="modal-overlay" style="display: none;">
-  <div class="modal-window">
-    <div class="modal-content">
-      <h3>Добавить тест</h3>
-      <label for="new-test-title" style="display: inline; margin-right: 488px;">Название теста:</label>
-      <input id="new-test-title" type="text" style="width: 600px; justify-content: center; margin-top: 5px;" placeholder="Введите название">
-    </div>
-    <div class="modal-actions">
-      <button class="modal-btn" style="background-color: #28a745;" onclick="submitNewTest()">Сохранить</button>
-      <button class="modal-btn" onclick="closeAddTestModal()">Отмена</button>
     </div>
   </div>
 </div>
@@ -320,7 +321,7 @@
     function editUser(id) {
      $.get(`/api/users/${id}`, data => openFormModal('user', data));
     }
-//______________________________________________________________удаление user || lecture || test______________________________________________________________-->
+//удаление user || lecture || test
     
     let itemToDelete = { id: null, type: null };
 
@@ -364,7 +365,7 @@
     });
 
 
-//______________________________________________________________статистика______________________________________________________________-->
+//статистика
 function loadStats() {
   $.get('/api/lab/user-stats', res => {
     const { tests, users, data } = res;
@@ -388,7 +389,7 @@ function loadStats() {
     $('#stats-body').html(bodyHtml);
   });
 }
-//______________________________________________________________пользователи______________________________________________________________-->
+//пользователи
 function loadUsers() {
     const tbody = $('#user-table tbody').empty();
     $.get('/api/users', data => {
@@ -420,7 +421,7 @@ function loadUsers() {
       });
     }
 
-//______________________________________________________________лекции______________________________________________________________
+//лекции
     function loadLectures() {
     const tbody = $('#lecture-table tbody').empty();
       $.get('/api/lections', data => {

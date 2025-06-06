@@ -1,40 +1,32 @@
 const db = require("../models");
-
-//_______________________________ controller Head/Body/Answers _______________________________
-
+//controller Head/Body/Answers 
 const LabHead = db.labHead;
-const LabBody = db.labBody;
-const LabAnswers= db.labAnswer;
+const LabBody = db.labBody; 
+const LabAnswers = db.labAnswer;
+const Op = db.Sequelize.Op;
 
+//_______________________________ Head _______________________________
 
-const Op = db.Sequelize.Op; 
-
-//_______________________________ Head_______________________________
-
-exports.createHead = (req, res) => { 
-  console.log(req.body , 'not work');
-  // Валидация request
-  if (!req.body.title) { // если в req.body !(нет) title || content
-    res.status(400).send({ // то выводим статус 400(ошибка) с сообщением 
-      message: "Отсутствует обязательное поле" //само соообщение 
+exports.createHead = (req, res) => {
+  if (!req.body.title) {
+    res.status(400).send({
+      message: "Отсутствует обязательное поле"
     });
     return;
   }
 
-  // иначе создаем объект с полями 
-  const item = { 
+  const item = {
     title: req.body.title
   };
 
-// Сохраняем в бд
-  LabHead.create(item) // create в готовой базе создаем строчку 
+  LabHead.create(item)
     .then(data => {
       res.send(data);
     })
-    .catch(err => {//иначе попадаем в .catch()
-      console.error("Ошибка при создании:", err); // выводим ошибку в консоль
-      res.status(500).send({//выдаем ответ с кодом 500 и сообщением 
-        message://сообщение которое мы выодим
+    .catch(err => {
+      console.error("Ошибка при создании:", err);
+      res.status(500).send({
+        message:
           err.message || "Произошла ошибка при создании."
       });
     });
@@ -45,16 +37,12 @@ exports.findAllHead = async (req, res) => {
     const title = req.query.title;
     const condition = title ? { title: { [Op.iLike]: `%${title}%` } } : {};
     const user = req.user;
-
     const data = await LabHead.findAll({ where: condition });
-    // Если пользователь авторизован — делаем доп. вычисления
+
     if (user) {
       const user_id = user.id;
-
-      // Обходим полученные записи и делаем асинхронные запросы
       for (let i = 0; i < data.length; i++) {
         const element = data[i];
-
         const result = await db.sequelize.query(`
           SELECT 
             COUNT(DISTINCT lb.id) AS total_a,
@@ -69,8 +57,6 @@ exports.findAllHead = async (req, res) => {
           replacements: { user_id, head_id: element.id },
           type: db.Sequelize.QueryTypes.SELECT
         });
-
-        // Результат — это массив из одного объекта
         const counter = result[0];
         data[i].dataValues.info = {
           total: counter.total_a,
@@ -78,9 +64,7 @@ exports.findAllHead = async (req, res) => {
         };
       }
     }
-    // Возвращаем данные (с info, если был пользователь)
     res.send(data);
-
   } catch (err) {
     res.status(500).send({
       message: err.message || "Не удалось загрузить данные."
@@ -89,80 +73,76 @@ exports.findAllHead = async (req, res) => {
 };
 
 exports.findOneHead = (req, res) => {
-  const id = req.params.id; // получаемм id из парамтеров(params) req(сам запрос откуда приходят все данные)
-  
-LabHead.findByPk(id,{
-  include: [{
-    model: db.labBody,
+  const id = req.params.id;
+  LabHead.findByPk(id, {
     include: [{
-      model: db.labAnswer
+      model: db.labBody,
+      include: [{
+        model: db.labAnswer
+      }]
     }]
-  }]
-}) // ищем запись в базе данных по Primary Key
+  })
     .then(data => {
-      if (data) { // если
-        res.send(data); // запись успешно найдена отправляем их
-      } else { // если, запись НЕ найдена 
-        res.status(404).send({ // возвращаем статус 500 
-          message: ` с ID=${id} не найдена` // и сообщение об ошибке
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `с ID=${id} не найдена`
         });
       }
     })
-    .catch(err => { // в противном случае при ошибке на сервере 
-      res.status(500).send({ // возвращаем статус 500
-        message: `Ошибка при получении с ID = ${id}` // и сообщение об ошибке
+    .catch(err => {
+      res.status(500).send({
+        message: `Ошибка при получении с ID = ${id}`
       });
     });
 };
 
-exports.updateHead = (req, res) => { 
-  const id = req.params.id; 
-  console.log( req.body );
-  LabHead.update(req.body, { // обновляем запись в бд
-    where: { id : id } // где id(по какому столбцу обновляем):id(значение с которым мы сверяеся)
+exports.updateHead = (req, res) => {
+  const id = req.params.id;
+  LabHead.update(req.body, {
+    where: { id: id }
   })
-    .then(num => { // в данном параметре получаем количество обновленных строк в бд
-      if (num == 1) { // if одна(n-количество) строка была успешно обновлена
+    .then(num => {
+      if (num == 1) {
         res.send({ message: "успешно обновлена" });
-        // по умолчанию статус 200 это успешно поэтому не указываем статус
-      } else { // 0 в случае, если ни одна строка не была обновлена
+      } else {
         res.status(404).send({ message: `Не удалось обновить лекцию с ID=${id}` });
       }
     })
-    .catch(err => { // в противном случае при ошибке на сервере 
-      res.status(500).send({ // возвращаем статус 500
-        message: `Ошибка при обновлении лекции с ID=${id}` // и сообщение об ошибке
+    .catch(err => {
+      res.status(500).send({
+        message: `Ошибка при обновлении лекции с ID=${id}`
       });
     });
 };
 
 exports.deleteHead = (req, res) => {
-  const id = req.params.id; // получаем ID из параметра
-  
-  if (isNaN(id)) { // // проверка, является ли ID числом
-    return res.status(400).send({ // если НЕ число возвращаем статус 400
-      message: "ID должен быть числом" // // и сообщение об ошибке
+  const id = req.params.id;
+  if (isNaN(id)) {
+    return res.status(400).send({
+      message: "ID должен быть числом"
     });
   }
 
-  const Id = parseInt(id); // преобразуем ID в число (потому что из URL он приходит как строка)
-
-  LabHead.destroy({ // удаляем запись из бд по ID
-    where: { id: Id }  // где id(по какому столбцу обновляем):id(значение с которым мы сверяеся)
+  const Id = parseInt(id);
+  LabHead.destroy({
+    where: { id: Id }
   })
     .then(num => {
-      if (num == 1) { // если запись была удалена 1
+      if (num == 1) {
         res.send({ message: " успешно удалена" });
-      } else { // если запись НЕ найдена возвращаем статус 404
-        res.status(404).send({ message: `Лекция с ID=${id} не найдена` }); // и сообщение
+      } else {
+        res.status(404).send({ message: `Лекция с ID=${id} не найдена` });
       }
     })
-    .catch(err => { // в противном случае при ошибке на сервере
-      res.status(500).send({ // возвращаем статус 500
-        message: `Ошибка при удалении лекции с ID=${id}` // и сообщение об ошибке
+    .catch(err => {
+      res.status(500).send({
+        message: `Ошибка при удалении лекции с ID=${id}`
       });
     });
 };
+
 
 exports.getUserAnswersStats = async (req, res) => {
   try {
@@ -190,10 +170,8 @@ exports.getUserAnswersStats = async (req, res) => {
       type: db.Sequelize.QueryTypes.SELECT
     });
 
-    // Преобразуем в табличную структуру
     const table = {};
     const testSet = new Set();
-
     rawResults.forEach(row => {
       if (!table[row.name]) {
         table[row.name] = {};
@@ -207,7 +185,6 @@ exports.getUserAnswersStats = async (req, res) => {
       users: Object.keys(table),
       data: table
     });
-
   } catch (err) {
     res.status(500).send({
       message: err.message || "Ошибка при получении статистики ответов."
@@ -216,53 +193,51 @@ exports.getUserAnswersStats = async (req, res) => {
 };
 
 //_______________________________ Body _______________________________
-exports.createBody = (req, res) => { 
-  // Валидация request
-  if (!req.body.title || !req.body.head_id) { 
-    res.status(400).send({ 
+
+exports.createBody = (req, res) => {
+  if (!req.body.title || !req.body.head_id) {
+    res.status(400).send({
       message: "ниче нет"
     });
     return;
   }
 
-  const item = { 
+  const item = {
     title: req.body.title,
     lab_head_Id: req.body.head_id
   };
 
-
-  LabBody.create(item) 
+  LabBody.create(item)
     .then(data => {
       res.send(data);
     })
-    .catch(err => {//иначе попадаем в .catch()
-      console.error("Ошибка при создании:", err); // выводим ошибку в консоль
-      res.status(500).send({//выдаем ответ с кодом 500 и сообщением 
-        message://сообщение которое мы выодим
+    .catch(err => {
+      console.error("Ошибка при создании:", err);
+      res.status(500).send({
+        message:
           err.message || "Произошла ошибка при создании."
       });
     });
 };
 
-exports.findAllBody = (req, res) => { 
-  const head_id = req.query.head_id; 
+exports.findAllBody = (req, res) => {
+  const head_id = req.query.head_id;
   const condition = head_id ? { lab_head_Id: head_id } : {};
 
-  LabBody.findAll({ where: condition }) 
+  LabBody.findAll({ where: condition })
     .then(data => {
-      res.send(data); // если данные успешно получены отправляем их
+      res.send(data);
     })
     .catch(err => {
-      res.status(500).send({ //если произошла ошибка тправляем статус 500 и сообщение об ошибке
+      res.status(500).send({
         message:
-          err.message || "Не удалось загрузить ."// сообщение
+          err.message || "Не удалось загрузить ."
       });
     });
 };
 
 exports.findOneBody = (req, res) => {
   const id = req.params.id;
-
   LabBody.findByPk(id)
     .then(data => {
       if (data) {
@@ -278,78 +253,73 @@ exports.findOneBody = (req, res) => {
     });
 };
 
-
-exports.updateBody = (req, res) => { 
-  const id = req.params.id; 
-
-  LabBody.update(req.body, { 
-    where: { id : id } 
+exports.updateBody = (req, res) => {
+  const id = req.params.id;
+  LabBody.update(req.body, {
+    where: { id: id }
   })
-    .then(num => { 
-      if (num == 1) { 
+    .then(num => {
+      if (num == 1) {
         res.send({ message: "успешно обновлена" });
-      } else { 
+      } else {
         res.status(404).send({ message: `Не удалось обновить вопрос с ID=${id}` });
       }
     })
-    .catch(err => {  
+    .catch(err => {
       res.status(500).send({
-        message: `Ошибка при обновлении вопроса с ID=${id}` 
+        message: `Ошибка при обновлении вопроса с ID=${id}`
       });
     });
 };
 
 exports.deleteBody = (req, res) => {
-  const id = req.params.id; 
-  
-  if (isNaN(id)) { 
-    return res.status(400).send({ 
-      message: "ID должен быть числом" 
+  const id = req.params.id;
+  if (isNaN(id)) {
+    return res.status(400).send({
+      message: "ID должен быть числом"
     });
   }
 
-  const Id = parseInt(id); 
-
-  LabBody.destroy({ 
-    where: { id: Id } 
+  const Id = parseInt(id);
+  LabBody.destroy({
+    where: { id: Id }
   })
     .then(num => {
-      if (num == 1) { 
+      if (num == 1) {
         res.send({ message: " успешно удалена" });
-      } else { 
+      } else {
         res.status(404).send({ message: `Лекция с ID=${id} не найдена` });
       }
     })
     .catch(err => {
-      res.status(500).send({ 
-        message: `Ошибка при удалении лекции с ID=${id}` 
+      res.status(500).send({
+        message: `Ошибка при удалении лекции с ID=${id}`
       });
     });
 };
 
 //_______________________________ Answers _______________________________
 
-exports.createAnswers = (req, res) => { 
-  // Валидация request
-  if (!req.body.title || req.body.lab_body_id === undefined || req.body.check === undefined) { 
-    res.status(400).send({ 
+exports.createAnswers = (req, res) => {
+  if (!req.body.title || req.body.lab_body_id === undefined || req.body.check === undefined) {
+    res.status(400).send({
       message: "ниче нет"
     });
     return;
   }
 
-  const item = { 
+  const item = {
     title: req.body.title,
     check: req.body.check,
     lab_body_Id: req.body.lab_body_id
   };
 
-  LabAnswers.create(item) 
+  LabAnswers.create(item)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
-      console.error("Ошибка при создании:", err); 
+      console.error("Ошибка при создании:", err);
       res.status(500).send({
         message:
           err.message || "Произошла ошибка при создании."
@@ -357,68 +327,63 @@ exports.createAnswers = (req, res) => {
     });
 };
 
-exports.findAllAnswer = (req, res) => { 
-  const body_id = req.query.body_id; 
+exports.findAllAnswer = (req, res) => {
+  const body_id = req.query.body_id;
   const condition = body_id ? { lab_body_Id: body_id } : {};
 
-
-  LabAnswers.findAll({ where: condition }) 
+  LabAnswers.findAll({ where: condition })
     .then(data => {
-      res.send(data); 
+      res.send(data);
     })
     .catch(err => {
-      res.status(500).send({ 
+      res.status(500).send({
         message:
           err.message || "Не удалось загрузить ."
       });
     });
 };
 
-exports.updateAnswer = (req, res) => { 
-  const id = req.params.id; 
-
-  LabAnswers.update(req.body, { 
-    where: { id : id } 
+exports.updateAnswer = (req, res) => {
+  const id = req.params.id;
+  LabAnswers.update(req.body, {
+    where: { id: id }
   })
     .then(num => {
-      if (num == 1) { 
+      if (num == 1) {
         res.send({ message: "успешно обновлена" });
-      } else { 
+      } else {
         res.status(404).send({ message: `Не удалось обновить с ID=${id}` });
       }
     })
     .catch(err => {
-      res.status(500).send({ 
-        message: `Ошибка при обновлении лекции с ID=${id}` 
+      res.status(500).send({
+        message: `Ошибка при обновлении лекции с ID=${id}`
       });
     });
 };
 
 exports.deleteAnswer = (req, res) => {
-  const id = req.params.id; 
-  
+  const id = req.params.id;
   if (isNaN(id)) {
-    return res.status(400).send({ 
-      message: "ID должен быть числом" 
+    return res.status(400).send({
+      message: "ID должен быть числом"
     });
   }
 
-  const Id = parseInt(id); 
-  LabAnswers.destroy({ 
-    where: { id: Id }  
+  const Id = parseInt(id);
+  LabAnswers.destroy({
+    where: { id: Id }
   })
     .then(num => {
       if (num == 1) {
         res.send({ message: " успешно удалена" });
-      } else { 
-        res.status(404).send({ message: `Лекция с ID=${id} не найдена` }); 
+      } else {
+        res.status(404).send({ message: `Лекция с ID=${id} не найдена` });
       }
     })
-    .catch(err => { 
+    .catch(err => {
       res.status(500).send({
-        message: `Ошибка при удалении лекции с ID=${id}` 
+        message: `Ошибка при удалении лекции с ID=${id}`
       });
     });
 };
-
-

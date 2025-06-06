@@ -2,12 +2,10 @@ const db = require("../models");
 
 //_______________________________ registerUser _______________________________
 
-
 exports.registerUser = async (req, res, next) => {
   try {
     const { name, surname, email, password, phoneNumber, birthDate, gender } = req.body;
 
-    // Валидация данных
     if (!name || !surname || !email || !password || !phoneNumber || !birthDate || !gender) {
       return res.status(400).json({ message: "Пожалуйста, заполните все поля" });
     }
@@ -15,9 +13,7 @@ exports.registerUser = async (req, res, next) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Неверный формат email" });
-    }
-
-    if (password.length < 6) {
+    } if (password.length < 6) {
       return res.status(400).json({ message: "Пароль должен быть не менее 6 символов" });
     }
 

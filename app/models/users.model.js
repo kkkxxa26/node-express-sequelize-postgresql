@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   }, {
     hooks: {
-      // Хешируем пароль перед созданием пользователя
+      // хеш пароль перед созданием user
       beforeCreate: async (user) => {
         if (user.password) {
           const salt = await bcrypt.genSalt(10);
@@ -42,7 +42,6 @@ module.exports = (sequelize, Sequelize) => {
     }
   });
 
-  // Метод для проверки пароля
   Users.prototype.validPassword = async function (password) {
     return await bcrypt.compare(password, this.password);
   };

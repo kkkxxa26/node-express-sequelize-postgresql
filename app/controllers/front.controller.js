@@ -1,6 +1,5 @@
+// controller Front unique
 const db = require("../models");
-
-//_______________________________ controller Front unique _______________________________
 
 exports.renderMain=(req,res)=>{
 
